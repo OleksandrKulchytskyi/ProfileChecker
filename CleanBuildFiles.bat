@@ -1,0 +1,1 @@
+for /d /r . %%d in (bin,obj,TestResults) do @if exist "%%d" rd /s/q "%%d"

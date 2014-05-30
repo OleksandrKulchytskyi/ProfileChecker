@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNSProfileChecker", "DNSProfileChecker\DNSProfileChecker.csproj", "{111F0E9F-9AF7-4493-AFC6-E9E8F9610C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNSProfileChecker.Common", "DNSProfileChecker.Common\DNSProfileChecker.Common.csproj", "{E97E8832-0054-46A3-A368-F6DAA7FDE5A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNSProfileChecker.Workflow", "DNSProfileChecker.Workflow\DNSProfileChecker.Workflow.csproj", "{08427C83-922A-4475-AB3D-F21F23D5A14E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNSProfileChecker.UnitTest", "DNSProfileChecker.UnitTest\DNSProfileChecker.UnitTest.csproj", "{918426AD-6030-445D-B889-DDDEE81143BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNSProfileChecker.log4NetLogger", "DNSProfileChecker.log4NetLogger\DNSProfileChecker.log4NetLogger.csproj", "{76A82EB8-915B-4F00-A2A8-820C5045B5BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{111F0E9F-9AF7-4493-AFC6-E9E8F9610C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111F0E9F-9AF7-4493-AFC6-E9E8F9610C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111F0E9F-9AF7-4493-AFC6-E9E8F9610C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111F0E9F-9AF7-4493-AFC6-E9E8F9610C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E97E8832-0054-46A3-A368-F6DAA7FDE5A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97E8832-0054-46A3-A368-F6DAA7FDE5A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97E8832-0054-46A3-A368-F6DAA7FDE5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97E8832-0054-46A3-A368-F6DAA7FDE5A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08427C83-922A-4475-AB3D-F21F23D5A14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08427C83-922A-4475-AB3D-F21F23D5A14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08427C83-922A-4475-AB3D-F21F23D5A14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08427C83-922A-4475-AB3D-F21F23D5A14E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{918426AD-6030-445D-B889-DDDEE81143BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{918426AD-6030-445D-B889-DDDEE81143BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{918426AD-6030-445D-B889-DDDEE81143BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{918426AD-6030-445D-B889-DDDEE81143BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A82EB8-915B-4F00-A2A8-820C5045B5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A82EB8-915B-4F00-A2A8-820C5045B5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A82EB8-915B-4F00-A2A8-820C5045B5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A82EB8-915B-4F00-A2A8-820C5045B5BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
