@@ -80,7 +80,7 @@ namespace DNSProfileChecker.Workflow
 				}
 				else
 				{
-					State = WorkflowState.NotApplied;
+					State = WorkflowStates.NotApplied;
 					Description = string.Format("Folder {0} size {1} is less than {2}{3} Workflow: {4} will not be applied.", containerDI.Name, size, Constants.FolderLimitSize, Environment.NewLine, this.GetType().ToString());
 					Logger.LogData(LogSeverity.Warn, Description, null);
 				}
@@ -88,7 +88,7 @@ namespace DNSProfileChecker.Workflow
 			}
 			else if (IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("Folder doesn't exist. {0}Folder path: {1}", Environment.NewLine, folderPath);
 				Logger.LogData(LogSeverity.Warn, Description, null);
 			}

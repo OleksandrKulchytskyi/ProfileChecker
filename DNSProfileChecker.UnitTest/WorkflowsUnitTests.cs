@@ -35,10 +35,10 @@ namespace DNSProfileChecker.UnitTest
 			IProfileWorkflow wf = result[2].SubsequentWorkflows.FirstOrDefault(x => x.GetType() == typeof(DNSProfileChecker.Workflow.SmallContainerWorkflow));
 			assignLogger(wf, logger);
 
-			Assert.IsTrue(wf.State == WorkflowState.None);
+			Assert.IsTrue(wf.State == WorkflowStates.None);
 			wf.Execute(@"\\DEV804\DragonUsers\AM10316_2\current\18_0_container");
 
-			Assert.IsTrue(wf.State == WorkflowState.Success && wf.Description == string.Empty);
+			Assert.IsTrue(wf.State == WorkflowStates.Success && wf.Description == string.Empty);
 		}
 
 		private void assignLogger(IProfileWorkflow wf, ILogger logger)

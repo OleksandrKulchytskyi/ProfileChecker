@@ -14,7 +14,7 @@ namespace DNSProfileChecker.Workflow
 
 		public override void Execute(object parameters)
 		{
-			State = WorkflowState.Processing;
+			State = WorkflowStates.Processing;
 			Ensure.Argument.NotNull(parameters, "parameters cannot be a null.");
 			string sourceFolder = parameters as string;
 
@@ -23,12 +23,12 @@ namespace DNSProfileChecker.Workflow
 			bool isExists = File.Exists(filePath);
 			if (!isExists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = "File topics.ini doesn't exist.";
 			}
 			else if (!isExists && IsImportant)
 			{
-				State = WorkflowState.Warn;
+				State = WorkflowStates.Warn;
 				Description = "File topics.ini doesn't exist.";
 			}
 			else if (isExists)
@@ -36,7 +36,7 @@ namespace DNSProfileChecker.Workflow
 				Dictionary<string, List<KeyValuePair<string, string>>> data = IniFileParser.GetSingleSection(filePath, "Topics");
 				if (data.Count == 0)
 				{
-					State = WorkflowState.Failed;
+					State = WorkflowStates.Failed;
 					Description = "There is no [Topics] section in the topics.ini file.";
 					return;
 				}
@@ -70,17 +70,17 @@ namespace DNSProfileChecker.Workflow
 				{
 					Description = msgBuilder.ToString();
 					if (IsImportant)
-						State = WorkflowState.Failed;
+						State = WorkflowStates.Failed;
 					else
-						State = WorkflowState.Warn;
+						State = WorkflowStates.Warn;
 				}
 				else if (isContainerMissed)
 				{
 					Description = msgBuilder.ToString();
-					State = WorkflowState.Warn;
+					State = WorkflowStates.Warn;
 				}
 				else
-					State = WorkflowState.Success;
+					State = WorkflowStates.Success;
 
 				base.Execute(parameters);
 			}

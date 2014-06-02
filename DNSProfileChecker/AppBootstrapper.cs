@@ -30,17 +30,18 @@ namespace Nuance.Radiology.DNSProfileChecker
 				container.RegisterPerRequest(abstr, null, types[abstr].Item1);
 			}
 
-			container.Singleton<Common.ILogger,Common.LoggerBridge>();
+			container.Singleton<Common.ILogger, Common.LoggerBridge>();
 			container.Singleton<IWindowManager, WindowManager>();
 			container.Singleton<IEventAggregator, EventAggregator>();
 			container.PerRequest<Common.Interfaces.IShell, ShellViewModel>();
 
 			string defNamespace = typeof(AppBootstrapper).Namespace;
-			var config = new TypeMappingConfiguration
+			TypeMappingConfiguration config = new TypeMappingConfiguration
 			{
-				DefaultSubNamespaceForViews = defNamespace+ ".Views",
-				DefaultSubNamespaceForViewModels = defNamespace+ ".ViewModels"
+				DefaultSubNamespaceForViews = defNamespace + ".Views",
+				DefaultSubNamespaceForViewModels = defNamespace + ".ViewModels"
 			};
+
 			ViewLocator.ConfigureTypeMappings(config);
 			ViewModelLocator.ConfigureTypeMappings(config);
 			//new Common.LoggerBridge(container.GetInstance<Common.ILogProvider>()));
@@ -52,7 +53,7 @@ namespace Nuance.Radiology.DNSProfileChecker
 			if (instance != null)
 				return instance;
 
-			throw new InvalidOperationException("Could not locate any instances.");
+			throw new InvalidOperationException(string.Format("Could not locate any instances for type {0}", serviceType));
 		}
 
 		protected override IEnumerable<object> GetAllInstances(Type serviceType)
@@ -68,8 +69,11 @@ namespace Nuance.Radiology.DNSProfileChecker
 		protected override void OnStartup(object sender, StartupEventArgs e)
 		{
 			//base.OnStartup(sender, e);
-			//this.Application.MainWindow = new Views.ApplicationControllerView();
 			DisplayRootViewFor<Common.Interfaces.IShell>();
+
+			var logger = container.GetInstance<Common.ILogger>();
+			if (logger != null)
+				logger.LogData(Common.LogSeverity.Info, "Application bootstrapper has been successfully initialized.", null);
 		}
 
 		protected override void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

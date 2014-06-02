@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Nuance.Radiology.DNSProfileChecker.Views.ProfileOptimizationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+              d:DesignHeight="342" d:DesignWidth="520">
+
+	<GroupBox Header="Profile(s) optimization:">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="0.08*"/>
+			</Grid.RowDefinitions>
+
+			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button x:Name="GoPrevious" Grid.Row="1" Width="50">Previous</Button>
+				<Button Margin="3,0,0,0" x:Name="GoNext"  Width="50">Next</Button>
+			</StackPanel>
+		</Grid>
+	</GroupBox>
+</UserControl>

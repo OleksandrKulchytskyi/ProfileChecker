@@ -8,7 +8,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 {
 	public class WorkflowState
 	{
-		public string Input1Field1 { get; set; }
+		public string SourcePath { get; set; }
 		public string Input1Field2 { get; set; }
 		public DateTime Input1Field3 { get; set; }
 		public bool Question1 { get; set; }

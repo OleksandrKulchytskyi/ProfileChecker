@@ -64,20 +64,31 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Converters\SeverityToImageConverter.cs" />
     <Compile Include="Infrastructure\Configuration\Services.cs" />
+    <Compile Include="Infrastructure\Controls\FolderView.cs" />
     <Compile Include="Infrastructure\Logger\UILogger.cs" />
+    <Compile Include="Infrastructure\Messages\LogEntry.cs" />
     <Compile Include="Infrastructure\Providers\AppConfigServiceProvider.cs" />
     <Compile Include="Infrastructure\Providers\DNSProfilesProvider.cs" />
+    <Compile Include="Models\ProfileEntry.cs" />
     <Compile Include="Models\WorkflowState.cs" />
+    <Compile Include="ViewModels\ProfileOptimizationViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\ProfileFilerViewModel.cs" />
+    <Compile Include="ViewModels\ProfileFilterViewModel.cs" />
     <Compile Include="ViewModels\SourceSelectorViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Transition.cs" />
+    <Compile Include="Views\ProfileFilterView.xaml.cs">
+      <DependentUpon>ProfileFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProfileOptimizationView.xaml.cs">
+      <DependentUpon>ProfileOptimizationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -128,12 +139,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\info.ico" />
+    <Resource Include="Images\error.ico" />
+    <Resource Include="Images\exit.ico" />
+    <Resource Include="Images\warn.ico" />
+    <Resource Include="Images\fatal.ico" />
+    <Resource Include="Images\folder.ico" />
     <Content Include="Workflows.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ProfileFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProfileOptimizationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ShellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -143,6 +168,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

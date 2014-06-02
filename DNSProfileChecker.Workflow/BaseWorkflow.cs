@@ -11,14 +11,14 @@ namespace DNSProfileChecker.Workflow
 	{
 		public BaseWorkflow()
 		{
-			State = WorkflowState.None;
+			State = WorkflowStates.None;
 			Description = string.Empty;
 		}
 
 		public ILogger Logger { get; set; }
 
 		public string Description { get; set; }
-		public WorkflowState State { get; set; }
+		public WorkflowStates State { get; set; }
 		public bool IsImportant { get; set; }
 
 		protected List<IProfileWorkflow> _innerHandlers;
@@ -41,8 +41,8 @@ namespace DNSProfileChecker.Workflow
 					try
 					{
 						w.Execute(parameter);
-						if (w.State == WorkflowState.None)
-							w.State = WorkflowState.Success;
+						if (w.State == WorkflowStates.None)
+							w.State = WorkflowStates.Success;
 					}
 					catch (Exception ex)
 					{
@@ -51,10 +51,10 @@ namespace DNSProfileChecker.Workflow
 					}
 					if (!isExceptional)
 					{
-						if (w.State == WorkflowState.NotApplied)
+						if (w.State == WorkflowStates.NotApplied)
 							continue;
 
-						else if (w.IsImportant && w.State != WorkflowState.Success)
+						else if (w.IsImportant && w.State != WorkflowStates.Success)
 						{
 							this.Description = w.Description;
 							this.State = w.State;
@@ -65,7 +65,7 @@ namespace DNSProfileChecker.Workflow
 					{
 						if (w.IsImportant)
 						{
-							this.State = WorkflowState.Exceptional;
+							this.State = WorkflowStates.Exceptional;
 							this.Description = exc.ToString();
 							DoLog(LogSeverity.Error, string.Format("Error has been occurred in {0} workflow", w.GetType().ToString()), exc);
 							break;

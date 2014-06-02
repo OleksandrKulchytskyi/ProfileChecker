@@ -13,24 +13,24 @@ namespace DNSProfileChecker.Workflow
 
 		public override void Execute(object parameters)
 		{
-			State = WorkflowState.Started;
-			State = WorkflowState.Processing;
+			State = WorkflowStates.Started;
+			State = WorkflowStates.Processing;
 			Ensure.Argument.NotNull(parameters, "parameters cannot be a null.");
 			string sourceFolder = parameters as string;
 			bool isExists = Directory.Exists(Path.Combine(sourceFolder, "current"));
-			State = WorkflowState.Processing;
+			State = WorkflowStates.Processing;
 			if (!isExists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = "Current folder is missed the profile root folder. ";
 			}
 			else if (!isExists && !IsImportant)
 			{
-				State = WorkflowState.Warn;
+				State = WorkflowStates.Warn;
 				Description = "Current folder is missed in the profile root folder.";
 			}
 			else
-				State = WorkflowState.Success;
+				State = WorkflowStates.Success;
 
 			base.Execute(parameters);
 		}

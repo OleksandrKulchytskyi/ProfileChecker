@@ -23,21 +23,21 @@ namespace DNSProfileChecker.Workflow
 			bool isExists = File.Exists(filePath);
 			if (!isExists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = "File acoustic.ini doesn't exist.";
 			}
 			else if (!isExists && IsImportant)
 			{
-				State = WorkflowState.Warn;
+				State = WorkflowStates.Warn;
 				Description = "File acoustic.ini doesn't exist.";
 			}
 			else if (isExists)
 			{
-				State = WorkflowState.Processing;
+				State = WorkflowStates.Processing;
 				Dictionary<string, List<KeyValuePair<string, string>>> data = IniFileParser.GetSingleSection(filePath, "Acoustics");
 				if (data.Count == 0)
 				{
-					State = WorkflowState.Failed;
+					State = WorkflowStates.Failed;
 					Description = "Unable to find [Acoustics] section in the acoustic.ini file.";
 					return;
 				}
@@ -71,17 +71,17 @@ namespace DNSProfileChecker.Workflow
 				{
 					Description = msgBuilder.ToString();
 					if (IsImportant)
-						State = WorkflowState.Failed;
+						State = WorkflowStates.Failed;
 					else
-						State = WorkflowState.Warn;
+						State = WorkflowStates.Warn;
 				}
 				else if (isContainerMissed)
 				{
-					State = WorkflowState.Warn;
+					State = WorkflowStates.Warn;
 					Description = msgBuilder.ToString();
 				}
 				else
-					State = WorkflowState.Success;
+					State = WorkflowStates.Success;
 
 			}
 		}

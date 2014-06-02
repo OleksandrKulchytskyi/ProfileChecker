@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
-	public sealed class ProfileFilerViewModel : BaseViewModel
+	public sealed class ProfileOptimizationViewModel : BaseViewModel
 	{
-		public ProfileFilerViewModel(WorkflowState state)
+		public ProfileOptimizationViewModel(WorkflowState state)
 			: base(state)
 		{
 

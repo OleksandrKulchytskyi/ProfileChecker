@@ -19,7 +19,7 @@ namespace DNSProfileChecker.Workflow
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
 			if (!draFolder.Exists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("Folder drafiles doesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
 				return;
@@ -33,7 +33,7 @@ namespace DNSProfileChecker.Workflow
 			FileInfo draIniFile = new FileInfo(Path.Combine(folderPath, "drafiles.ini"));
 			if (!draIniFile.Exists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("File drafiles.ini doesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
 				return;
@@ -47,7 +47,7 @@ namespace DNSProfileChecker.Workflow
 			FileInfo acarchiveNWM = new FileInfo(Path.Combine(folderPath, "acarchive.nwv"));
 			if (!acarchiveNWM.Exists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("File acarchive.nwv doesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
 				return;
@@ -61,7 +61,7 @@ namespace DNSProfileChecker.Workflow
 			FileInfo acarchiveENWM = new FileInfo(Path.Combine(folderPath, "acarchive.enwv"));
 			if (!acarchiveENWM.Exists && IsImportant)
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("File acarchive.enwvdoesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
 				return;
@@ -73,10 +73,10 @@ namespace DNSProfileChecker.Workflow
 			}
 
 			if (isWarned)
-				State = WorkflowState.Warn;
+				State = WorkflowStates.Warn;
 			else
 			{
-				State = WorkflowState.Success;
+				State = WorkflowStates.Success;
 				DoLog(LogSeverity.Info, string.Format("Session folder named {0} is correct.", folderPath), null);
 			}
 		}

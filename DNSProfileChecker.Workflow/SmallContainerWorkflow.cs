@@ -27,7 +27,7 @@ namespace DNSProfileChecker.Workflow
 				{
 					Description = string.Format("Folder {0} size {1} is great than {2}{3} Workflow: {4} will not be applied.", containerDI.Name, size, Constants.FolderLimitSize, Environment.NewLine, this.GetType().ToString());
 					Logger.LogData(LogSeverity.Warn, Description, null);
-					State = WorkflowState.NotApplied;
+					State = WorkflowStates.NotApplied;
 					return;
 				}
 
@@ -35,13 +35,13 @@ namespace DNSProfileChecker.Workflow
 				{
 					IProfileWorkflow workflow = SubsequentWorkflows[0];
 					workflow.Execute(folderPath);
-					if (workflow.State == WorkflowState.Failed)
+					if (workflow.State == WorkflowStates.Failed)
 					{
 						this.State = workflow.State;
 						this.Description = workflow.Description;
 						return;
 					}
-					else if (workflow.State == WorkflowState.Success)
+					else if (workflow.State == WorkflowStates.Success)
 					{
 						DoLog(LogSeverity.Info, string.Format("Container folder verification has completed succesfully, {0}", containerDI.Name), null);
 					}
@@ -58,7 +58,7 @@ namespace DNSProfileChecker.Workflow
 					if (!reorderManager.Reorder(sessions))
 					{
 						DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during reordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
-						State = WorkflowState.Warn;
+						State = WorkflowStates.Warn;
 					}
 					else
 						DoLog(LogSeverity.Info, "Session reordering workflow completed successfully.", null);
@@ -68,7 +68,7 @@ namespace DNSProfileChecker.Workflow
 					{
 						base.Execute(sessionDI.FullName);
 					}
-					State = WorkflowState.Success;
+					State = WorkflowStates.Success;
 				}
 				else
 				{
@@ -79,12 +79,12 @@ namespace DNSProfileChecker.Workflow
 					{
 						base.Execute(session.FullName);
 					}
-					State = WorkflowState.Success;
+					State = WorkflowStates.Success;
 				}
 			}
 			else
 			{
-				State = WorkflowState.Failed;
+				State = WorkflowStates.Failed;
 				Description = string.Format("Folder doesn't exist. {0}Folder path: {1}", Environment.NewLine, folderPath);
 			}
 		}

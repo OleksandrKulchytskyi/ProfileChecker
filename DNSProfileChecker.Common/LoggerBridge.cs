@@ -10,7 +10,7 @@ namespace DNSProfileChecker.Common
 	{
 		private class LogComposite : ILogger
 		{
-			private Dictionary<string, ILogger> _loggers;
+			private readonly Dictionary<string, ILogger> _loggers;
 			public LogComposite(Dictionary<string, ILogger> loggers)
 			{
 				Ensure.Argument.NotNull(loggers);

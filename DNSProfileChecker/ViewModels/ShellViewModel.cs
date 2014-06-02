@@ -1,22 +1,24 @@
 ﻿using Caliburn.Micro;
 using Nuance.Radiology.DNSProfileChecker.Models;
-using Nuance.Radiology.DNSProfileChecker.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using Common = DNSProfileChecker.Common;
 
 namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
-	public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, Common.Interfaces.IShell
+	public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, Common.Interfaces.IShell, IHandle<Infrastructure.Messages.LogEntry>
 	{
-		public ShellViewModel()
-		{
-			initializeMap();
+		private readonly IEventAggregator _eventAggregator;
 
+		public ShellViewModel(IEventAggregator eventAggregator)
+		{
+			_eventAggregator = eventAggregator;
+			_eventAggregator.Subscribe(this);
+
+			initializeMap();
 			activateFirstScreen();
+			_logs = new ObservableCollection<Infrastructure.Messages.LogEntry>();
 		}
 
 		private void activateFirstScreen()
@@ -28,30 +30,44 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 		private void initializeMap()
 		{
-			TransitionMap.Add<SourceSelectorViewModel, ProfileFilerViewModel>(StateTransition.Input1Success);
+			TransitionMap.Add<SourceSelectorViewModel, ProfileFilterViewModel>(StateTransition.SourceSelectorFinished);
 			TransitionMap.Add<SourceSelectorViewModel, SourceSelectorViewModel>(StateTransition.Cancel);
 
-			//TransitionMap.Add<Question2ViewModel, Input3ViewModel>(StateTransition.Option1);
-			//TransitionMap.Add<Question2ViewModel, Finalize4ViewModel>(StateTransition.Option2);
-			//TransitionMap.Add<Question2ViewModel, Input1ViewModel>(StateTransition.Cancel);
+			TransitionMap.Add<ProfileFilterViewModel, ProfileOptimizationViewModel>(StateTransition.ProfileFilteringFinished);
+			TransitionMap.Add<ProfileFilterViewModel, SourceSelectorViewModel>(StateTransition.SourceSelector);
+			TransitionMap.Add<ProfileFilterViewModel, SourceSelectorViewModel>(StateTransition.Cancel);
 
-			//TransitionMap.Add<Input3ViewModel, Finalize4ViewModel>(StateTransition.Input3Success);
-			//TransitionMap.Add<Input3ViewModel, Input1ViewModel>(StateTransition.Cancel);
-
-			//TransitionMap.Add<Finalize4ViewModel, Input1ViewModel>(StateTransition.Cancel);
+			TransitionMap.Add<ProfileOptimizationViewModel, ProfileFilterViewModel>(StateTransition.ProfileFiltering);
+			TransitionMap.Add<ProfileOptimizationViewModel, SourceSelectorViewModel>(StateTransition.Cancel);
 		}
-
 
 		protected override IScreen DetermineNextItemToActivate(IList<IScreen> list, int lastIndex)
 		{
-			var theScreenThatJustClosed = list[lastIndex] as BaseViewModel;
-			var state = theScreenThatJustClosed.WorkflowState;
+			BaseViewModel theScreenThatJustClosed = list[lastIndex] as BaseViewModel;
+			WorkflowState state = theScreenThatJustClosed.WorkflowState;
 
-			var nextScreenType = TransitionMap.GetNextScreenType(theScreenThatJustClosed);
+			Type nextScreenType = TransitionMap.GetNextScreenType(theScreenThatJustClosed);
 
-			var nextScreen = Activator.CreateInstance(nextScreenType, state);
+			return (Activator.CreateInstance(nextScreenType, state) as IScreen);
+		}
 
-			return nextScreen as IScreen;
+		public void Handle(Infrastructure.Messages.LogEntry message)
+		{
+			if (message != null)
+			{
+				_logs.Add(message);
+			}
+		}
+
+		private ObservableCollection<Infrastructure.Messages.LogEntry> _logs;
+		public ObservableCollection<Infrastructure.Messages.LogEntry> Logs
+		{
+			get { return _logs; }
+			set
+			{
+				_logs = value;
+				base.NotifyOfPropertyChange(() => Logs);
+			}
 		}
 	}
 }

@@ -2,19 +2,18 @@
 using Nuance.Radiology.DNSProfileChecker.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nuance.Radiology.DNSProfileChecker.Models
 {
 	public enum StateTransition
 	{
 		Cancel,
-		Input1Success,
-		Option1,
-		Option2,
-		Input3Success
+		SourceSelector,
+		SourceSelectorFinished,
+		ProfileFiltering,
+		ProfileFilteringFinished,
+		ProfileOptimization,
+		ProfileOptimizationFinished
 	}
 
 	public class TransitionMap : Dictionary<Type, Dictionary<StateTransition, Type>>
@@ -22,7 +21,6 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 		private static TransitionMap m_instance;
 
 		private TransitionMap() { }
-
 
 		public static TransitionMap GetInstance()
 		{
@@ -32,8 +30,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 			}
 			return m_instance;
 		}
-
-
+		
 		public static void Add<TIdentity, TResponse>(StateTransition transition)
 			where TIdentity : IScreen
 			where TResponse : IScreen
@@ -58,14 +55,10 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 			var transition = screenThatClosed.NextTransition;
 
 			if (!instance.ContainsKey(identity))
-			{
 				throw new InvalidOperationException(string.Format("There are no states transitions defined for state {0}", identity.ToString()));
-			}
 
 			if (!instance[identity].ContainsKey(transition))
-			{
 				throw new InvalidOperationException(string.Format("There is response setup for transition {0} from screen {1}", transition.ToString(), identity.ToString()));
-			}
 
 			return instance[identity][transition];
 		}
