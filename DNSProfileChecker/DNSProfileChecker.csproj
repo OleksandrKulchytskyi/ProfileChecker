@@ -64,13 +64,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Converters\OverallProgressValuesConverter.cs" />
+    <Compile Include="Converters\ProcessingProfileConverter.cs" />
     <Compile Include="Converters\SeverityToImageConverter.cs" />
+    <Compile Include="Infrastructure\Behaviours\ListViewScrollBehavior.cs" />
+    <Compile Include="Infrastructure\Behaviours\MultiSelectorBehaviours.cs" />
     <Compile Include="Infrastructure\Configuration\Services.cs" />
     <Compile Include="Infrastructure\Controls\FolderView.cs" />
     <Compile Include="Infrastructure\Logger\UILogger.cs" />
     <Compile Include="Infrastructure\Messages\LogEntry.cs" />
     <Compile Include="Infrastructure\Providers\AppConfigServiceProvider.cs" />
     <Compile Include="Infrastructure\Providers\DNSProfilesProvider.cs" />
+    <Compile Include="Infrastructure\TwoListSynchronizer.cs" />
     <Compile Include="Models\ProfileEntry.cs" />
     <Compile Include="Models\WorkflowState.cs" />
     <Compile Include="ViewModels\ProfileOptimizationViewModel.cs" />

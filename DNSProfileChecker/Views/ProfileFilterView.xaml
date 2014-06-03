@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:cal="http://www.caliburnproject.org"
+			 xmlns:beh="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours"
              mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="520" >
 
 	<GroupBox Header="Select profiles for optimization:" cal:Message.Attach="[Event Loaded]= [Action OnLoaded($this)]">
@@ -14,6 +15,9 @@
 			</Grid.RowDefinitions>
 
 			<Grid>
+				<Grid.Resources>
+					<BitmapImage x:Key="folderImg" UriSource="/Nuance.Radiology.DNSProfileChecker;component/Images/folder.ico" />
+				</Grid.Resources>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="0.1*"/>
 					<RowDefinition/>
@@ -26,10 +30,45 @@
 				<TextBlock Text="Profiles to be optimized:" />
 				<TextBlock Text="Profiles to be dismissed:" Grid.Column="2"/>
 
-				<ListView Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}"></ListView>
-				<ListView Grid.Row="1" Grid.Column="2" ItemsSource="{Binding DismissedProfiles}"></ListView>
-			</Grid>
+				<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<UniformGrid IsItemsHost="True" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Vertical">
+								<Image Source="{StaticResource folderImg}"/>
+								<Label Content="{Binding Name}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+				
+				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+					<Button x:Name="MoveToDismiss" Content="{Binding ToDismissContent}"></Button>
+					<Button x:Name="MoveToAvaliable" Content="{Binding ToAvaliableContent}"></Button>
+				</StackPanel>
 
+				<ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding DismissedProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedDismiss}">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<UniformGrid IsItemsHost="True" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Vertical">
+								<Image Source="{StaticResource folderImg}"/>
+								<Label Content="{Binding Name}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
 
 			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
 				<Button Margin="0,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="50">Previous</Button>

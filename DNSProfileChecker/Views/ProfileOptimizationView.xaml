@@ -3,15 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-              d:DesignHeight="342" d:DesignWidth="520">
+			 xmlns:conv="clr-namespace:Nuance.Radiology.DNSProfileChecker.Converters"
+             mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="520">
 
-	<GroupBox Header="Profile(s) optimization:">
+	<GroupBox Header="Profile(s) optimization workflow:">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition/>
 				<RowDefinition Height="0.08*"/>
 			</Grid.RowDefinitions>
+
+			<StackPanel Orientation="Vertical">
+				<StackPanel.Resources>
+					<conv:ProcessingProfileConverter x:Key="textConverter"/>
+					<conv:OverallProgressValuesConverter x:Key="progressConverter"/>
+				</StackPanel.Resources>
+				<TextBlock Text="{Binding Path=CurrentProfile.Name, Converter={StaticResource textConverter}}" Margin="0,4,0,0"/>
+				<TextBlock HorizontalAlignment="Center" Margin="0,3,0,3">
+					<TextBlock.Text>
+						<MultiBinding Converter="{StaticResource progressConverter}"  Mode="TwoWay">
+							<Binding Path="ProcessedProfiles" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+							<Binding Path="ProfilesOverall" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+				<ProgressBar Maximum="{Binding ProfilesOverall}" Value="{Binding ProcessedProfiles}"  Height="25" Margin="0,4,0,0"/>
+				<Button x:Name="BeginProcess" Content="Start"  HorizontalAlignment="Center" Width="70" Margin="0,5,0,0"/>
+			</StackPanel>
 
 			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
 				<Button x:Name="GoPrevious" Grid.Row="1" Width="50">Previous</Button>
