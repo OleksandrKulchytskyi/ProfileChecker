@@ -19,6 +19,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			initializeMap();
 			activateFirstScreen();
 			_logs = new ObservableCollection<Infrastructure.Messages.LogEntry>();
+			base.DisplayName = "DNS Profiles Checker";
 		}
 
 		private void activateFirstScreen()
