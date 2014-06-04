@@ -19,15 +19,13 @@ namespace DNSProfileChecker.Workflow
 			string sourceFolder = parameters as string;
 			bool isExists = Directory.Exists(Path.Combine(sourceFolder, "current"));
 			State = WorkflowStates.Processing;
-			if (!isExists && IsImportant)
+			if (!isExists)
 			{
-				State = WorkflowStates.Failed;
-				Description = "Current folder is missed the profile root folder. ";
-			}
-			else if (!isExists && !IsImportant)
-			{
-				State = WorkflowStates.Warn;
-				Description = "Current folder is missed in the profile root folder.";
+				Description = "Current folder doesn't exist in the profile root folder.";
+				if (IsImportant)
+					State = WorkflowStates.Failed;
+				else
+					State = WorkflowStates.Warn;
 			}
 			else
 				State = WorkflowStates.Success;

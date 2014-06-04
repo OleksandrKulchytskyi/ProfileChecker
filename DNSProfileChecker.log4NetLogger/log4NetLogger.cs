@@ -13,16 +13,22 @@ namespace DNSProfileChecker.log4NetLogger
 
 		public Log4NetLogger()
 		{
-			_logger = LogManager.GetLogger(typeof(Log4NetLogger).FullName);
-			log4net.Config.XmlConfigurator.Configure();
-
-			_logger.Info("log4NetLogger has been initialized.");
+			try
+			{
+				_logger = LogManager.GetLogger(typeof(Log4NetLogger).FullName);
+				log4net.Config.XmlConfigurator.Configure();
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}			
 		}
 
 		public void LogData(LogSeverity severity, string message, Exception ex)
 		{
 			switch (severity)
 			{
+				case LogSeverity.Success:
 				case LogSeverity.Info:
 					_logger.Info(message);
 					break;

@@ -25,8 +25,8 @@ namespace DNSProfileChecker.Workflow
 				long size = containerDI.GetFolderSize();
 				if (size > Constants.FolderLimitSize)
 				{
-					Description = string.Format("Folder {0} size {1} is great than {2}{3} Workflow: {4} will not be applied.", containerDI.Name, size, Constants.FolderLimitSize, Environment.NewLine, this.GetType().ToString());
-					Logger.LogData(LogSeverity.Warn, Description, null);
+					Description = string.Format("Folder [{0}] has a size {1} which is great than a set threshold {2}{3} Workflow: {4} won't be applied.", containerDI.Name, size, Constants.FolderLimitSize, Environment.NewLine, this.GetType().ToString());
+					DoLog(LogSeverity.Info, Description, null);
 					State = WorkflowStates.NotApplied;
 					return;
 				}
@@ -61,7 +61,7 @@ namespace DNSProfileChecker.Workflow
 						State = WorkflowStates.Warn;
 					}
 					else
-						DoLog(LogSeverity.Info, "Session reordering workflow completed successfully.", null);
+						DoLog(LogSeverity.Info, "Session reordering workflow has completed successfully.", null);
 
 					DoLog(LogSeverity.Info, "Begin to verify each session folder.", null);
 					foreach (DirectoryInfo sessionDI in containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly))

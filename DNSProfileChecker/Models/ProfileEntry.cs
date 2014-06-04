@@ -32,5 +32,15 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 		{
 			get { return _di.Exists; }
 		}
+
+		public override string ToString()
+		{
+			return _di.Name;
+		}
+
+		public override int GetHashCode()
+		{
+			return _di.GetHashCode();
+		}
 	}
 }

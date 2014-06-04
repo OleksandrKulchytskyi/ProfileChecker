@@ -96,7 +96,7 @@ namespace DNSProfileChecker.Common
 								found == 1)
 							break;
 
-						if (sectionData != null)
+						if (sectionData != null && line.IsNotNullOrEmpty())
 						{
 							int indx=line.IndexOf('=');
 							string key = line.Substring(0, indx);

@@ -62,7 +62,7 @@ namespace DNSProfileChecker.Workflow
 			if (!acarchiveENWM.Exists && IsImportant)
 			{
 				State = WorkflowStates.Failed;
-				Description = string.Format("File acarchive.enwvdoesn't exist in the root folder: {0}", folderPath);
+				Description = string.Format("File acarchive.enwv doesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
 				return;
 			}
@@ -77,7 +77,7 @@ namespace DNSProfileChecker.Workflow
 			else
 			{
 				State = WorkflowStates.Success;
-				DoLog(LogSeverity.Info, string.Format("Session folder named {0} is correct.", folderPath), null);
+				DoLog(LogSeverity.Info, string.Format("Session folder [{0}] is correct.", folderPath), null);
 			}
 		}
 	}

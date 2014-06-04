@@ -16,6 +16,7 @@
 			<Button x:Name="GoNext" Grid.Row="1" Width="50">Next</Button>
 			<TextBlock HorizontalAlignment="Left" Margin="20,22,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top"/>
 			<TextBox HorizontalAlignment="Left" Height="23" Margin="24,54,0,0" TextWrapping="Wrap" Text="{Binding Path=ProfileSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="287"/>
+			<Button Content="Browse..." HorizontalAlignment="Left" Margin="332,54,0,0" VerticalAlignment="Top" Width="75" x:Name="Browse"/>
 		</Grid>
 	</GroupBox>
 </UserControl>

@@ -11,13 +11,13 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
 	public sealed class ProfileFilterViewModel : BaseViewModel
 	{
-		private readonly IEventAggregator _eventMediator;
 		private readonly WorkflowState _state;
+		private readonly ILogger _logger;
 
 		public ProfileFilterViewModel(WorkflowState state)
 			: base(state)
 		{
-			_eventMediator = IoC.Get<IEventAggregator>();
+			_logger = IoC.Get<ILogger>();
 			_state = state;
 
 			SelectedDismiss = new ObservableCollection<ProfileEntry>();
@@ -115,15 +115,11 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			{
 				profiles = await provider.GetProfiles(_state.SourcePath);
 				AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
-				_eventMediator.PublishOnUIThread(new Infrastructure.Messages.LogEntry()
-				{
-					Severity = LogSeverity.Info,
-					Message = string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count)
-				});
+				_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
 			}
 			catch (Exception ex)
 			{
-				_eventMediator.PublishOnUIThread(new Infrastructure.Messages.LogEntry() { Severity = LogSeverity.Error, Message = "Error has been ocurred during retrieving profiles.", Error = ex });
+				_logger.LogData(LogSeverity.Error, "Error has been ocurred during retrieving profiles.", ex);
 			}
 			finally
 			{
@@ -157,6 +153,17 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 		public void MoveToAvaliable()
 		{
+			List<ProfileEntry> toProcess = new List<ProfileEntry>(SelectedDismiss);
+
+			foreach (ProfileEntry pe in toProcess)
+			{
+				AvaliableProfiles.Add(pe);
+			}
+			foreach (ProfileEntry pe in toProcess)
+			{
+				DismissedProfiles.Remove(pe);
+			}
+
 			RefreshData();
 		}
 

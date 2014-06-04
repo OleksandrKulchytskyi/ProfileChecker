@@ -7,7 +7,8 @@ namespace DNSProfileChecker.Common
 		Info = 0,
 		Warn,
 		Error,
-		Fatal
+		Fatal,
+		Success
 	}
 
 	public interface ILogger

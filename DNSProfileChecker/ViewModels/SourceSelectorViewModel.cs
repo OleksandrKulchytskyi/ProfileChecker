@@ -8,7 +8,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 	public sealed class SourceSelectorViewModel : BaseViewModel
 	{
 		private readonly WorkflowState _state;
-		private readonly IEventAggregator _aggregator;
+		private readonly ILogger _aggregator;
 		public SourceSelectorViewModel(WorkflowState state)
 			: base(state)
 		{
@@ -16,7 +16,11 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (_state.SourcePath.IsNotNullOrEmpty())
 				ProfileSource = _state.SourcePath;
 
-			_aggregator = IoC.Get<IEventAggregator>();
+			_aggregator = IoC.Get<ILogger>();
+
+#if DEBUG
+			ProfileSource = @"\\dev804\dragonusers";
+#endif
 		}
 
 		private string _profileSource;
@@ -46,14 +50,14 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			catch (Exception ex)
 			{
 				proceed = false;
-				_aggregator.PublishOnUIThread(new Infrastructure.Messages.LogEntry() { Severity = LogSeverity.Error, Message = ex.Message, Error = ex });
+				_aggregator.LogData(LogSeverity.Error, ex.Message, ex);
 			}
 
 			if (!proceed)
 				return;
 
 			proceed = false;
-			_aggregator.PublishOnUIThread(new Infrastructure.Messages.LogEntry() { Severity = LogSeverity.Info, Message = string.Format("Source folder: {0}", ProfileSource) });
+			_aggregator.LogData(LogSeverity.Info, string.Format("Source folder: {0}", ProfileSource), null);
 
 			this.NextTransition = Models.StateTransition.SourceSelectorFinished;
 			_state.SourcePath = ProfileSource;
@@ -66,6 +70,14 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			{
 				return ProfileSource.IsNotNullOrEmpty();
 			}
+		}
+
+		public void Browse()
+		{
+			var dialog = new System.Windows.Forms.FolderBrowserDialog();
+			System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+				this.ProfileSource = dialog.SelectedPath;
 		}
 	}
 }

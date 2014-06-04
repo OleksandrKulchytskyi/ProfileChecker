@@ -15,7 +15,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Converters
 			switch (severity)
 			{
 				case LogSeverity.Info:
-					logo.UriSource = new Uri("pack://application:,,,/Nuance.Radiology.DNSProfileChecker;component/Images/info.ico");
+					logo.UriSource = new Uri("pack://application:,,,/Nuance.Radiology.DNSProfileChecker;component/Images/iconinfo.png");
 					break;
 				case LogSeverity.Warn:
 					logo.UriSource = new Uri("pack://application:,,,/Nuance.Radiology.DNSProfileChecker;component/Images/warn.ico");
@@ -25,6 +25,9 @@ namespace Nuance.Radiology.DNSProfileChecker.Converters
 					break;
 				case LogSeverity.Fatal:
 					logo.UriSource = new Uri("pack://application:,,,/Nuance.Radiology.DNSProfileChecker;component/Images/fatal.ico");
+					break;
+				case LogSeverity.Success:
+					logo.UriSource = new Uri("pack://application:,,,/Nuance.Radiology.DNSProfileChecker;component/Images/success.ico");
 					break;
 				default:
 					break;

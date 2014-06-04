@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:conv="clr-namespace:Nuance.Radiology.DNSProfileChecker.Converters"
 		xmlns:behaviours="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours"
-        Title="DNS Profile Checker" Height="550" Width="750" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="DNS Profile Checker" Height="710" Width="850" WindowStyle="ToolWindow" ResizeMode="NoResize">
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition/>
-			<RowDefinition Height="0.4*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="0.9*"/>
 		</Grid.RowDefinitions>
 		<ContentControl Name="ActiveItem" VerticalAlignment="Stretch" Height="362" Grid.Row="0"/>
 		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True">
@@ -19,12 +19,12 @@
 					<GridViewColumn Width="70" Header="Severity" >
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
-								<Image Source="{Binding Path=Severity, Converter={StaticResource imageConverter}}"  Width="25" Height="20"/>
+								<Image Source="{Binding Path=Severity, Converter={StaticResource imageConverter}}"  Width="23" Height="18"/>
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Width="480" Header="Message" DisplayMemberBinding="{Binding Message}"/>
-					<GridViewColumn Width="188" Header="Error" DisplayMemberBinding="{Binding Error}"/>
+					<GridViewColumn Width="765" Header="Message" DisplayMemberBinding="{Binding Message}"/>
+					<!--<GridViewColumn Width="188" Header="Error" DisplayMemberBinding="{Binding Error}"/>-->
 				</GridView>
 			</ListView.View>
 		</ListView>

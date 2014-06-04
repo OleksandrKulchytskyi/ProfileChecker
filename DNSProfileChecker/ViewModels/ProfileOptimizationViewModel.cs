@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using DNSProfileChecker.Common;
 using Nuance.Radiology.DNSProfileChecker.Infrastructure.Messages;
+using Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers;
 using Nuance.Radiology.DNSProfileChecker.Models;
 using System;
 using System.Collections.Concurrent;
@@ -12,23 +13,25 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
 	public sealed class ProfileOptimizationViewModel : BaseViewModel
 	{
-		private readonly ConcurrentQueue<ProfileEntry> toProcess;
+		private ConcurrentQueue<ProfileEntry> toProcess;
 		private volatile bool isStarted = false;
-		
-		readonly IWorkflowProvider _provider;
-		readonly IEventAggregator _eventMediator;
-		readonly WorkflowState _state;
-		
+		private volatile bool isStopped = false;
+		private List<IProfileWorkflow> workflows = null;
+
+		private readonly IWorkflowProvider _provider;
+		private readonly WorkflowState _state;
+		private readonly ILogger _logger;
+
 		public ProfileOptimizationViewModel(WorkflowState state)
 			: base(state)
 		{
 			_state = state;
 			_provider = IoC.Get<IWorkflowProvider>();
-			_eventMediator = IoC.Get<IEventAggregator>();
+			_logger = IoC.Get<ILogger>();
 			_provider.Parameters = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Workflows.xml");
 
 			ProfilesOverall = state.Profiles == null ? 0 : state.Profiles.Count;
-			toProcess = new ConcurrentQueue<ProfileEntry>(state.Profiles);
+			_logger.LogData(LogSeverity.Info, string.Format("Selected {0} profile(s) for checking.", ProfilesOverall), null);
 		}
 
 		private ProfileEntry current;
@@ -78,62 +81,129 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
+		public void GoNext() { }
+		public bool CanGoNext { get { return false; } }
+
 		public async void BeginProcess()
 		{
-			isStarted = true;
-			NotifyCtrls();
-			List<IProfileWorkflow> workflows = null;
-			try
+			if (workflows == null)
 			{
-				workflows = await Task.Factory.StartNew<List<IProfileWorkflow>>(() =>
+				try
 				{
-					_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Info, Message = "Initializing workflows." });
-					List<IProfileWorkflow> result = _provider.Initialize();
-					_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Info, Message = "Workflows have been initialized." });
-					return result;
-				});
-			}
-			catch (Exception ex)
-			{
-				_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Error, Message = "Unable to initialize workflows.", Error = ex });
-				return;
+					workflows = await Task.Factory.StartNew<List<IProfileWorkflow>>(() =>
+					{
+						_logger.LogData(LogSeverity.Info, "Initializing workflows.", null);
+						List<IProfileWorkflow> result = _provider.Initialize();
+						_logger.LogData(LogSeverity.Info, "Workflows have been initialized.", null);
+						return result;
+					});
+
+					foreach (IProfileWorkflow w in workflows)
+						assignLoggerToWorkflow(w, _logger);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogData(LogSeverity.Fatal, "Unable to initialize workflows.", ex);
+					return;
+				}
 			}
 
-			_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Info, Message = "Begin processing profile(s)." });
+			if (toProcess == null)
+				toProcess = new ConcurrentQueue<ProfileEntry>(_state.Profiles);
+
+			else if (isStopped && toProcess != null && CurrentProfile != null)
+			{
+				List<ProfileEntry> entries = new List<ProfileEntry>(toProcess.Count + 1);
+				entries.Add(CurrentProfile);
+				entries.AddRange(toProcess.ToArray());
+				toProcess = null;
+				toProcess = new ConcurrentQueue<ProfileEntry>(entries);
+			}
+
+			isStarted = true;
+			isStopped = false;
+			NotifyCtrls();
+			if (CurrentProfile == null)
+			{
+				ProcessedProfiles = 0;
+				_logger.LogData(LogSeverity.Info, string.Format("Begin processing DNS profile(s)."), null);
+			}
+
 			ProfileEntry entry = null;
+			bool isErrorOccurred = false;
+			Exception error = null;
+			bool isProfileCorrect = true;
 			while (toProcess.TryDequeue(out entry))
 			{
 				CurrentProfile = entry;
 
+				if (isStopped) return;// terminate our process in case when stopped
+
+				_logger.LogData(LogSeverity.Info, string.Format("Begin to process {0} DNS profile.", CurrentProfile.Name), null);
+
+				isProfileCorrect = true;
 				foreach (IProfileWorkflow workflow in workflows)
 				{
-					//workflow.Execute(entry.FullPath);
-					//if (workflow.IsImportant && (workflow.State != WorkflowStates.Success || workflow.State != WorkflowStates.Warn))
-					//{
-					//	if (workflow.State == WorkflowStates.Failed || workflow.State == WorkflowStates.Exceptional)
-					//		_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Error, Message = workflow.Description });
-					//}
-					//else
-					//{
-						
-					//}
-				}
+					try
+					{
+						isErrorOccurred = false;
+						error = null;
+						await TaskHelper.CreateTaskFromParametrizedAction(workflow.Execute, entry.FullPath);
+					}
+					catch (Exception ex)
+					{
+						isErrorOccurred = true;
+						error = ex;
+					}
+
+					if (isErrorOccurred)
+					{
+						isProfileCorrect = false;
+						_logger.LogData(LogSeverity.Fatal, error.Message, error);
+						continue;
+						//break;
+					}
+
+					if (workflow.IsImportant)
+					{
+						if (workflow.State == WorkflowStates.Failed || workflow.State == WorkflowStates.Exceptional || workflow.State == WorkflowStates.Warn)
+						{
+							_logger.LogData(LogSeverity.Error, workflow.Description, null);
+							isProfileCorrect = false;
+							continue;
+						}
+					}
+					else
+					{
+						if (workflow.State == WorkflowStates.Failed || workflow.State == WorkflowStates.Exceptional || workflow.State == WorkflowStates.Warn)
+						{
+							_logger.LogData(LogSeverity.Warn, workflow.Description, null);
+							isProfileCorrect = false;
+							continue;
+						}
+					}
+
+					isProfileCorrect = workflow.IsProfileMatchState(WorkflowStates.Success);
+				}//end for loop
+
+				ProcessedProfiles++;
+				if (isProfileCorrect)
+					_logger.LogData(LogSeverity.Info, string.Format("Profile {0} has no error(s).", CurrentProfile.Name), null);
+
+				_logger.LogData(LogSeverity.Info, "Profile checking have been completed.", null);
 
 				await Task.Delay(TimeSpan.FromSeconds(1));
-				ProcessedProfiles++;
-			}
+
+			}//end while loop
 
 			CurrentProfile = null;
-			_eventMediator.PublishOnUIThread(new LogEntry() { Severity = LogSeverity.Info, Message = "Profile(s) processed." });
+			toProcess = null;
+			_logger.LogData(LogSeverity.Info, "End processing  DNS profile(s).", null);
 
 			isStarted = false;
-			NotifyCtrls();
-		}
+			isStopped = false;
 
-		void NotifyCtrls()
-		{
-			NotifyOfPropertyChange(() => CanBeginProcess);
-			NotifyOfPropertyChange(() => CanGoPrevious);
+			NotifyCtrls();
 		}
 
 		public bool CanBeginProcess
@@ -141,6 +211,43 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			get
 			{
 				return !isStarted;
+			}
+		}
+
+		public void StopProcess()
+		{
+			isStopped = true;
+			isStarted = false;
+			NotifyCtrls();
+		}
+
+		public bool CanStopProcess
+		{
+			get
+			{
+				return isStarted;
+			}
+		}
+
+		void NotifyCtrls()
+		{
+			NotifyOfPropertyChange(() => CanStopProcess);
+			NotifyOfPropertyChange(() => CanBeginProcess);
+			NotifyOfPropertyChange(() => CanGoPrevious);
+		}
+
+		private void assignLoggerToWorkflow(IProfileWorkflow wf, ILogger logger)
+		{
+			if (logger != null)
+			{
+				wf.Logger = logger;
+				if (wf.SubsequentWorkflows == null)
+					return;
+
+				foreach (var item in wf.SubsequentWorkflows)
+				{
+					assignLoggerToWorkflow(item, logger);
+				}
 			}
 		}
 

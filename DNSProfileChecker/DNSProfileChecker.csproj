@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -71,6 +72,8 @@
     <Compile Include="Infrastructure\Behaviours\MultiSelectorBehaviours.cs" />
     <Compile Include="Infrastructure\Configuration\Services.cs" />
     <Compile Include="Infrastructure\Controls\FolderView.cs" />
+    <Compile Include="Infrastructure\Helpers\ProfileWorkflowHelper.cs" />
+    <Compile Include="Infrastructure\Helpers\TaskHelper.cs" />
     <Compile Include="Infrastructure\Logger\UILogger.cs" />
     <Compile Include="Infrastructure\Messages\LogEntry.cs" />
     <Compile Include="Infrastructure\Providers\AppConfigServiceProvider.cs" />
@@ -150,6 +153,8 @@
     <Resource Include="Images\warn.ico" />
     <Resource Include="Images\fatal.ico" />
     <Resource Include="Images\folder.ico" />
+    <Resource Include="Images\iconinfo.png" />
+    <Resource Include="Images\success.ico" />
     <Content Include="Workflows.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

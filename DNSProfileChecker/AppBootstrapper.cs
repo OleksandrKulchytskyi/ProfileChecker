@@ -68,12 +68,11 @@ namespace Nuance.Radiology.DNSProfileChecker
 
 		protected override void OnStartup(object sender, StartupEventArgs e)
 		{
-			//base.OnStartup(sender, e);
 			DisplayRootViewFor<Common.Interfaces.IShell>();
 
 			var logger = container.GetInstance<Common.ILogger>();
 			if (logger != null)
-				logger.LogData(Common.LogSeverity.Info, "Application bootstrapper has been successfully initialized.", null);
+				logger.LogData(Common.LogSeverity.Success, "Application bootstrapper has been successfully initialized.", null);
 		}
 
 		protected override void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

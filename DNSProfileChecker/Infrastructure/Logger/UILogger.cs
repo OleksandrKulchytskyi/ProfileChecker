@@ -1,10 +1,6 @@
 ﻿using Caliburn.Micro;
 using DNSProfileChecker.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Logger
 {
@@ -24,7 +20,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Logger
 
 		public void LogData(LogSeverity severity, string message, Exception ex)
 		{
-			var msg = new Infrastructure.Messages.LogEntry() { Error = ex, Message = message, Severity = severity };
+			var msg = new Infrastructure.Messages.LogEntry() { Severity = severity, Message = message, Error = ex };
 			_eventAggregator.PublishOnUIThread(msg);
 		}
 	}

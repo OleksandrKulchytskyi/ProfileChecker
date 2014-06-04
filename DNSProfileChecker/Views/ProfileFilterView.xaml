@@ -34,7 +34,7 @@
 						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}">
 					<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<UniformGrid IsItemsHost="True" />
+							<UniformGrid IsItemsHost="True" Columns="5" Rows="3"/>
 						</ItemsPanelTemplate>
 					</ListBox.ItemsPanel>
 					<ListBox.ItemTemplate>
@@ -56,7 +56,7 @@
 						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedDismiss}">
 					<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<UniformGrid IsItemsHost="True" />
+							<UniformGrid IsItemsHost="True" Columns="5" Rows="3"/>
 						</ItemsPanelTemplate>
 					</ListBox.ItemsPanel>
 					<ListBox.ItemTemplate>
