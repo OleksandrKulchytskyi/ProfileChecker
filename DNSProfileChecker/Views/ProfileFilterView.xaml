@@ -71,8 +71,8 @@
 			</Grid>
 
 			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button Margin="0,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="50">Previous</Button>
-				<Button Margin="3,2,0,0" x:Name="GoNext"  Width="50">Next</Button>
+				<Button Margin="0,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="60">Previous</Button>
+				<Button Margin="3,2,0,0" x:Name="GoNext"  Width="60">Next</Button>
 			</StackPanel>
 		</Grid>
 	</GroupBox>

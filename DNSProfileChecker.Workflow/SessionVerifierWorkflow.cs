@@ -45,31 +45,25 @@ namespace DNSProfileChecker.Workflow
 			}
 
 			FileInfo acarchiveNWM = new FileInfo(Path.Combine(folderPath, "acarchive.nwv"));
-			if (!acarchiveNWM.Exists && IsImportant)
-			{
-				State = WorkflowStates.Failed;
-				Description = string.Format("File acarchive.nwv doesn't exist in the root folder: {0}", folderPath);
-				DoLog(LogSeverity.Error, Description, null);
-				return;
-			}
-			else if (!acarchiveNWM.Exists && !IsImportant)
-			{
-				DoLog(LogSeverity.Warn, string.Format("File acarchive.nwv doesn't exist in the root folder: {0}", folderPath), null);
-				isWarned = true;
-			}
-
 			FileInfo acarchiveENWM = new FileInfo(Path.Combine(folderPath, "acarchive.enwv"));
-			if (!acarchiveENWM.Exists && IsImportant)
+			bool missedBoth = (!acarchiveENWM.Exists && !acarchiveNWM.Exists);
+			if (missedBoth)
 			{
 				State = WorkflowStates.Failed;
-				Description = string.Format("File acarchive.enwv doesn't exist in the root folder: {0}", folderPath);
+				Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
+				DoLog(LogSeverity.Warn, string.Format("Folder {0} will be deleted.", folderPath), null);
 				return;
 			}
-			else if (!acarchiveENWM.Exists && IsImportant)
+			else
 			{
-				DoLog(LogSeverity.Warn, string.Format("File acarchive.enwv doesn't exist in the root folder: {0}", folderPath), null);
-				isWarned = true;
+				State = WorkflowStates.Success;
+				if (!acarchiveNWM.Exists)
+					Description = string.Format("File acarchive.nwv doesn't exist in the session folder: {0}", folderPath);
+				if (!acarchiveENWM.Exists)
+					Description = string.Format("File acarchive.enwv doesn't exist in the session folder: {0}", folderPath);
+
+				DoLog(LogSeverity.Warn, Description, null);
 			}
 
 			if (isWarned)

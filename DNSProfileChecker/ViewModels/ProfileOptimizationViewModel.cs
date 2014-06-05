@@ -188,9 +188,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 				ProcessedProfiles++;
 				if (isProfileCorrect)
-					_logger.LogData(LogSeverity.Info, string.Format("Profile {0} has no error(s).", CurrentProfile.Name), null);
-
-				_logger.LogData(LogSeverity.Info, "Profile checking have been completed.", null);
+					_logger.LogData(LogSeverity.Success, string.Format("Profile {0} has been checked with no error(s).", CurrentProfile.Name), null);
 
 				await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -198,7 +196,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 			CurrentProfile = null;
 			toProcess = null;
-			_logger.LogData(LogSeverity.Info, "End processing  DNS profile(s).", null);
+			_logger.LogData(LogSeverity.Info, "All DNS profile(s) have been checked.", null);
 
 			isStarted = false;
 			isStopped = false;

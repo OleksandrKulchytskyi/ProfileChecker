@@ -10,7 +10,12 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers
 
 			bool result = true;
 			if (workflow.State != state)
-				return false;
+			{
+				if (workflow.State != WorkflowStates.NotApplied)
+				{
+					return false;
+				}
+			}
 
 			if (workflow.SubsequentWorkflows != null && workflow.SubsequentWorkflows.Count > 0)
 			{
