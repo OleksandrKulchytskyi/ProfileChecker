@@ -102,5 +102,4 @@ namespace DNSProfileChecker.Common
 			}
 		}
 	}
-
 }

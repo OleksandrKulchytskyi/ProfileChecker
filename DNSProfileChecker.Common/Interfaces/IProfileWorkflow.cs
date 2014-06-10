@@ -19,6 +19,7 @@ namespace DNSProfileChecker.Common
 		ILogger Logger { get; set; }
 
 		string Description { get; set; }
+
 		WorkflowStates State { get; set; }
 
 		bool IsImportant { get; set; }

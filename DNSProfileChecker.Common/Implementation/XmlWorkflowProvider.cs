@@ -10,7 +10,7 @@ namespace DNSProfileChecker.Common.Implementation
 		public XmlWorkflowProvider()
 		{
 		}
-		 
+
 		public List<IProfileWorkflow> Initialize()
 		{
 			Ensure.Argument.NotNull(Parameters, "Parameters cannot be a null.");
@@ -64,6 +64,5 @@ namespace DNSProfileChecker.Common.Implementation
 		}
 
 		public object Parameters { get; set; }
-
 	}
 }

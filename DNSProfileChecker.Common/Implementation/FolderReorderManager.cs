@@ -45,7 +45,6 @@ namespace DNSProfileChecker.Common.Implementation
 								}
 								catch (Exception exc) { excList.Add(exc); }
 								finally { try { if (newDi.Exists) newDi.Delete(true); } catch { } }
-
 							}
 							break;
 						}

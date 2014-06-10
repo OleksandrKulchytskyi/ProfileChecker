@@ -6,7 +6,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 	public sealed class ProfileEntry
 	{
 		private DirectoryInfo _di;
-		
+
 		public ProfileEntry(string path)
 		{
 			_di = new DirectoryInfo(path);

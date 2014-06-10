@@ -1,17 +1,17 @@
 ﻿<UserControl x:Class="Nuance.Radiology.DNSProfileChecker.Views.ProfileFilterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:cal="http://www.caliburnproject.org"
 			 xmlns:beh="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours"
-             mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="520" >
+             mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="520">
 
 	<GroupBox Header="Select profiles for optimization:" cal:Message.Attach="[Event Loaded]= [Action OnLoaded($this)]">
-		<Grid >
+		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition/>
-				<RowDefinition Height="0.08*"/>
+				<RowDefinition />
+				<RowDefinition Height="0.08*" />
 			</Grid.RowDefinitions>
 
 			<Grid>
@@ -19,50 +19,50 @@
 					<BitmapImage x:Key="folderImg" UriSource="/Nuance.Radiology.DNSProfileChecker;component/Images/folder.ico" />
 				</Grid.Resources>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="0.1*"/>
-					<RowDefinition/>
+					<RowDefinition Height="0.1*" />
+					<RowDefinition />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="0.2*"/>
-					<ColumnDefinition/>
+					<ColumnDefinition />
+					<ColumnDefinition Width="0.2*" />
+					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
-				<TextBlock Text="Profiles to be optimized:" />
-				<TextBlock Text="Profiles to be dismissed:" Grid.Column="2"/>
+				<TextBlock Text="Avaliable profiles:" />
+				<TextBlock Text="Profiles to be checked:" Grid.Column="2" />
 
 				<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
 						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}">
-					<ListBox.ItemsPanel>
+					<!--<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<UniformGrid IsItemsHost="True" Columns="5" Rows="3"/>
+							<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
 						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
+					</ListBox.ItemsPanel>-->
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<StackPanel Orientation="Vertical">
-								<Image Source="{StaticResource folderImg}"/>
+							<StackPanel Orientation="Horizontal">
+								<!--<Image Source="{StaticResource folderImg}" />-->
 								<Label Content="{Binding Name}" />
 							</StackPanel>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
-				
+
 				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
-					<Button x:Name="MoveToDismiss" Content="{Binding ToDismissContent}"></Button>
+					<Button x:Name="MoveToCheck" Content="{Binding ToCheckContent}"></Button>
 					<Button x:Name="MoveToAvaliable" Content="{Binding ToAvaliableContent}"></Button>
 				</StackPanel>
 
-				<ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding DismissedProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
-						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedDismiss}">
-					<ListBox.ItemsPanel>
+				<ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding ProfilesToCheck}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedToCheck}">
+					<!--<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<UniformGrid IsItemsHost="True" Columns="5" Rows="3"/>
+							<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
 						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
+					</ListBox.ItemsPanel>-->
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<StackPanel Orientation="Vertical">
-								<Image Source="{StaticResource folderImg}"/>
+							<StackPanel Orientation="Horizontal">
+								<!--<Image Source="{StaticResource folderImg}" />-->
 								<Label Content="{Binding Name}" />
 							</StackPanel>
 						</DataTemplate>

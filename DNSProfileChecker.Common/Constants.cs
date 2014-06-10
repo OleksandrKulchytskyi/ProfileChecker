@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace DNSProfileChecker.Common
 {
 	public static class Constants
 	{
 		private static int _taken = -1;
+
 		/// <summary>
 		/// Gets the limit for container folder
 		/// </summary>

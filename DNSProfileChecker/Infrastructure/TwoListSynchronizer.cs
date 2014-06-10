@@ -6,7 +6,6 @@ using System.Windows;
 
 namespace Nuance.Radiology.DNSProfileChecker.Infrastructure
 {
-
 	/// <summary>
 	/// Converts items in the Master list to Items in the target list, and back again.
 	/// </summary>
@@ -28,7 +27,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure
 	}
 
 	/// <summary>
-	/// Keeps two lists synchronized. 
+	/// Keeps two lists synchronized.
 	/// </summary>
 	public class TwoListSynchronizer : IWeakEventListener
 	{
@@ -36,7 +35,6 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure
 		private readonly IList _masterList;
 		private readonly IListItemConverter _masterTargetConverter;
 		private readonly IList _targetList;
-
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TwoListSynchronizer"/> class.
@@ -170,18 +168,23 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure
 				case NotifyCollectionChangedAction.Add:
 					PerformActionOnAllLists(AddItems, sourceList, e);
 					break;
+
 				case NotifyCollectionChangedAction.Move:
 					PerformActionOnAllLists(MoveItems, sourceList, e);
 					break;
+
 				case NotifyCollectionChangedAction.Remove:
 					PerformActionOnAllLists(RemoveItems, sourceList, e);
 					break;
+
 				case NotifyCollectionChangedAction.Replace:
 					PerformActionOnAllLists(ReplaceItems, sourceList, e);
 					break;
+
 				case NotifyCollectionChangedAction.Reset:
 					UpdateListsFromSource(sender as IList);
 					break;
+
 				default:
 					break;
 			}
@@ -264,7 +267,6 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure
 				SetListValuesFromSource(_targetList, _masterList, ConvertFromTargetToMaster);
 			}
 		}
-
 
 		/// <summary>
 		/// An implementation that does nothing in the conversions.

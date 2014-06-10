@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace DNSProfileChecker.Common
 {
@@ -20,6 +17,7 @@ namespace DNSProfileChecker.Common
 			if (ex != null && triggerError)
 				throw ex;
 		}
+
 		public static T Do<T>(Func<T> action, TimeSpan retryInterval, int retryCount, out AggregateException exc)
 		{
 			exc = null;

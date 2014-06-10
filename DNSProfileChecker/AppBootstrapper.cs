@@ -53,7 +53,7 @@ namespace Nuance.Radiology.DNSProfileChecker
 			if (instance != null)
 				return instance;
 
-			throw new InvalidOperationException(string.Format("Could not locate any instances for type {0}", serviceType));
+			throw new InvalidOperationException(string.Format("Could not locate any instance for type {0}", serviceType));
 		}
 
 		protected override IEnumerable<object> GetAllInstances(Type serviceType)

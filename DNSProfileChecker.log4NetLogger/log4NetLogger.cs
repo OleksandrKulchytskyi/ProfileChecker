@@ -21,7 +21,7 @@ namespace DNSProfileChecker.log4NetLogger
 			catch (Exception ex)
 			{
 				throw;
-			}			
+			}
 		}
 
 		public void LogData(LogSeverity severity, string message, Exception ex)
@@ -32,27 +32,31 @@ namespace DNSProfileChecker.log4NetLogger
 				case LogSeverity.Info:
 					_logger.Info(message);
 					break;
+
 				case LogSeverity.Warn:
 					if (ex == null)
 						_logger.Warn(message);
 					_logger.Warn(message, ex);
 					break;
+
 				case LogSeverity.Error:
 					if (ex == null)
 						_logger.Error(message);
 					_logger.Error(message, ex);
 					break;
+
 				case LogSeverity.Fatal:
 					if (ex == null)
 						_logger.Fatal(message);
 					_logger.Fatal(message, ex);
 					break;
+
 				default:
 					break;
 			}
 		}
 
-		private string GetExceptionData( Exception exception)
+		private string GetExceptionData(Exception exception)
 		{
 			var properties = exception.GetType().GetProperties();
 			var fields = properties
@@ -115,5 +119,4 @@ namespace DNSProfileChecker.log4NetLogger
 			LogManager.Shutdown();
 		}
 	}
-
 }

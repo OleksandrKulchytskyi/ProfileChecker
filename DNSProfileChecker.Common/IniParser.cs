@@ -98,10 +98,10 @@ namespace DNSProfileChecker.Common
 
 						if (sectionData != null && line.IsNotNullOrEmpty())
 						{
-							int indx=line.IndexOf('=');
+							int indx = line.IndexOf('=');
 							string key = line.Substring(0, indx);
-							string value = line.Substring(indx+1);
-							KeyValuePair<string, string> pair = new KeyValuePair<string, string>(key,value);
+							string value = line.Substring(indx + 1);
+							KeyValuePair<string, string> pair = new KeyValuePair<string, string>(key, value);
 							sectionData.Add(pair);
 						}
 					}

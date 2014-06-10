@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Configuration
 {
 	public class Service : ConfigurationElement
 	{
-		public Service() { }
+		public Service()
+		{
+		}
 
 		[ConfigurationProperty("bind", DefaultValue = "", IsKey = true, IsRequired = true)]
 		public string bind

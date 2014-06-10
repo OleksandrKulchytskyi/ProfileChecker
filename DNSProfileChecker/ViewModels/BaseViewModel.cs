@@ -1,16 +1,14 @@
 ﻿using Caliburn.Micro;
 using DNSProfileChecker.Common;
 using Nuance.Radiology.DNSProfileChecker.Models;
-using System;
 
 namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
 	public class BaseViewModel : Screen
 	{
-		public WorkflowState WorkflowState { get; private set; }
+		public WorkflowState WorkflowState { get; protected set; }
 
 		public StateTransition NextTransition { get; protected set; }
-
 
 		public BaseViewModel(WorkflowState workflowState)
 		{
@@ -18,7 +16,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 			this.WorkflowState = workflowState;
 		}
-
 
 		public void Cancel()
 		{

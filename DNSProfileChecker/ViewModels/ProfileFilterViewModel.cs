@@ -20,80 +20,86 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			_logger = IoC.Get<ILogger>();
 			_state = state;
 
-			SelectedDismiss = new ObservableCollection<ProfileEntry>();
+			SelectedToCheck = new ObservableCollection<ProfileEntry>();
 			SelectedAvaliable = new ObservableCollection<ProfileEntry>();
 
-			SelectedDismiss.CollectionChanged += SelectedDismiss_CollectionChanged;
+			SelectedToCheck.CollectionChanged += SelectedToCheck_CollectionChanged;
 			SelectedAvaliable.CollectionChanged += SelectedAvaliable_CollectionChanged;
 
-			DismissedProfiles = new ObservableCollection<ProfileEntry>();
-			ToDismissContent = ">>";
+			ProfilesToCheck = new ObservableCollection<ProfileEntry>();
+			ToCheckContent = ">>";
 			ToAvaliableContent = "<<";
 		}
 
-		void SelectedDismiss_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void SelectedToCheck_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			NotifyOfPropertyChange(() => CanMoveToAvaliable);
+			NotifyOfPropertyChange(() => CanGoNext);
 		}
 
-		void SelectedAvaliable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void SelectedAvaliable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			NotifyOfPropertyChange(() => CanMoveToDismiss);
+			NotifyOfPropertyChange(() => CanMoveToCheck);
+			NotifyOfPropertyChange(() => CanGoNext);
 		}
 
 		private string toDismiss;
-		public string ToDismissContent
+
+		public string ToCheckContent
 		{
 			get { return toDismiss; }
-			set { toDismiss = value; NotifyOfPropertyChange(() => ToDismissContent); }
+			set { toDismiss = value; NotifyOfPropertyChange(() => ToCheckContent); }
 		}
 
 		private string toAvaliable;
+
 		public string ToAvaliableContent
 		{
 			get { return toAvaliable; }
 			set { toAvaliable = value; NotifyOfPropertyChange(() => ToAvaliableContent); }
 		}
 
-
 		private ObservableCollection<ProfileEntry> _profiles;
+
 		public ObservableCollection<ProfileEntry> AvaliableProfiles
 		{
 			get { return _profiles; }
 			set
 			{
 				_profiles = value;
-				NotifyOfPropertyChange(() => DismissedProfiles);
+				NotifyOfPropertyChange(() => ProfilesToCheck);
 				NotifyOfPropertyChange(() => CanGoNext);
 			}
 		}
 
 		private ObservableCollection<ProfileEntry> _dismissed;
-		public ObservableCollection<ProfileEntry> DismissedProfiles
+
+		public ObservableCollection<ProfileEntry> ProfilesToCheck
 		{
 			get { return _dismissed; }
 			set
 			{
 				_dismissed = value;
-				NotifyOfPropertyChange(() => DismissedProfiles);
+				NotifyOfPropertyChange(() => ProfilesToCheck);
 				NotifyOfPropertyChange(() => CanGoNext);
 			}
 		}
 
-
 		private ObservableCollection<ProfileEntry> selectedDismiss;
-		public ObservableCollection<ProfileEntry> SelectedDismiss
+
+		public ObservableCollection<ProfileEntry> SelectedToCheck
 		{
 			get { return selectedDismiss; }
 			set
 			{
 				selectedDismiss = value;
-				NotifyOfPropertyChange(() => SelectedDismiss);
-				NotifyOfPropertyChange(() => CanMoveToDismiss);
+				NotifyOfPropertyChange(() => SelectedToCheck);
+				NotifyOfPropertyChange(() => CanMoveToCheck);
 			}
 		}
 
 		private ObservableCollection<ProfileEntry> selectedAvaliable;
+
 		public ObservableCollection<ProfileEntry> SelectedAvaliable
 		{
 			get { return selectedAvaliable; }
@@ -104,8 +110,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				NotifyOfPropertyChange(() => CanMoveToAvaliable);
 			}
 		}
-
-
 
 		public async void OnLoaded(DependencyObject obj)
 		{
@@ -127,12 +131,12 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
-		public void MoveToDismiss()
+		public void MoveToCheck()
 		{
 			List<ProfileEntry> toProcess = new List<ProfileEntry>(SelectedAvaliable);
 			foreach (ProfileEntry pe in toProcess)
 			{
-				DismissedProfiles.Add(pe);
+				ProfilesToCheck.Add(pe);
 			}
 
 			foreach (ProfileEntry pe in toProcess)
@@ -143,7 +147,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			RefreshData();
 		}
 
-		public bool CanMoveToDismiss
+		public bool CanMoveToCheck
 		{
 			get
 			{
@@ -153,7 +157,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 		public void MoveToAvaliable()
 		{
-			List<ProfileEntry> toProcess = new List<ProfileEntry>(SelectedDismiss);
+			List<ProfileEntry> toProcess = new List<ProfileEntry>(SelectedToCheck);
 
 			foreach (ProfileEntry pe in toProcess)
 			{
@@ -161,7 +165,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 			foreach (ProfileEntry pe in toProcess)
 			{
-				DismissedProfiles.Remove(pe);
+				ProfilesToCheck.Remove(pe);
 			}
 
 			RefreshData();
@@ -171,20 +175,21 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			get
 			{
-				return (SelectedDismiss != null && SelectedDismiss.Count > 0);
+				return (SelectedToCheck != null && SelectedToCheck.Count > 0);
 			}
 		}
 
 		private void RefreshData()
 		{
 			NotifyOfPropertyChange(() => AvaliableProfiles);
-			NotifyOfPropertyChange(() => DismissedProfiles);
+			NotifyOfPropertyChange(() => ProfilesToCheck);
 		}
 
 		public void GoPrevious()
 		{
 			FreeSelectedSubscription();
 			this.NextTransition = Models.StateTransition.SourceSelector;
+			this.WorkflowState = _state;
 			this.TryClose();
 		}
 
@@ -192,7 +197,8 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			FreeSelectedSubscription();
 			this.NextTransition = Models.StateTransition.ProfileFilteringFinished;
-			_state.Profiles = AvaliableProfiles.ToList();
+			this.WorkflowState = _state;
+			_state.Profiles = ProfilesToCheck.ToList();
 			this.TryClose();
 		}
 
@@ -200,13 +206,13 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			get
 			{
-				return (AvaliableProfiles != null && AvaliableProfiles.Count > 0);
+				return (ProfilesToCheck != null && ProfilesToCheck.Count > 0);
 			}
 		}
 
 		private void FreeSelectedSubscription()
 		{
-			SelectedDismiss.CollectionChanged -= SelectedDismiss_CollectionChanged;
+			SelectedToCheck.CollectionChanged -= SelectedToCheck_CollectionChanged;
 			SelectedAvaliable.CollectionChanged -= SelectedAvaliable_CollectionChanged;
 		}
 	}

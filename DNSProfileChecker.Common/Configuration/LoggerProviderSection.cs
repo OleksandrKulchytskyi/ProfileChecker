@@ -4,7 +4,9 @@ namespace DNSProfileChecker.Common.Configuration
 {
 	public class Logger : ConfigurationElement
 	{
-		public Logger() { }
+		public Logger()
+		{
+		}
 
 		[ConfigurationProperty("name", DefaultValue = "", IsKey = true, IsRequired = true)]
 		public string name

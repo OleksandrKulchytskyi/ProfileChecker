@@ -8,7 +8,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 {
 	public class ListViewScrollBehavior
 	{
-		static Dictionary<ListView, Capture> Associations = new Dictionary<ListView, Capture>();
+		private static Dictionary<ListView, Capture> Associations = new Dictionary<ListView, Capture>();
 
 		public static bool GetScrollOnNewItem(DependencyObject obj)
 		{
@@ -44,7 +44,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 			}
 		}
 
-		static void ListBox_Unloaded(object sender, RoutedEventArgs e)
+		private static void ListBox_Unloaded(object sender, RoutedEventArgs e)
 		{
 			var listBox = (ListView)sender;
 			if (Associations.ContainsKey(listBox))
@@ -52,7 +52,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 			listBox.Unloaded -= ListBox_Unloaded;
 		}
 
-		static void ListBox_Loaded(object sender, RoutedEventArgs e)
+		private static void ListBox_Loaded(object sender, RoutedEventArgs e)
 		{
 			var listBox = (ListView)sender;
 			var incc = listBox.Items as INotifyCollectionChanged;
@@ -61,9 +61,10 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 			Associations[listBox] = new Capture(listBox);
 		}
 
-		class Capture : IDisposable
+		private class Capture : IDisposable
 		{
 			public ListView listBox { get; set; }
+
 			public INotifyCollectionChanged incc { get; set; }
 
 			public Capture(ListView listBox)
@@ -77,7 +78,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 				}
 			}
 
-			void incc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+			private void incc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			{
 				if (e.Action == NotifyCollectionChangedAction.Add)
 				{

@@ -128,7 +128,6 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours
 					throw new InvalidOperationException("Target object has no SelectedItems property to bind.");
 				}
 			}
-
 		}
 	}
 }

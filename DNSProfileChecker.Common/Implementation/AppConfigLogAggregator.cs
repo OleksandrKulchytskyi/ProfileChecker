@@ -7,7 +7,8 @@ namespace DNSProfileChecker.Common.Implementation
 	public sealed class AppConfigLogProvider : ILogProvider
 	{
 		private LogProviderConfig config;
-		Dictionary<string, ILogger> _container;
+		private Dictionary<string, ILogger> _container;
+
 		public AppConfigLogProvider()
 		{
 			config = LogProviderConfig.GetConfig();

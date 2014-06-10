@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Common = DNSProfileChecker.Common;
+
 namespace Nuance.Radiology.DNSProfileChecker
 {
 	/// <summary>

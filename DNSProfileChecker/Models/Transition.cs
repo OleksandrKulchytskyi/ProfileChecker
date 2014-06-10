@@ -18,19 +18,21 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 
 	public class TransitionMap : Dictionary<Type, Dictionary<StateTransition, Type>>
 	{
-		private static TransitionMap m_instance;
+		private static TransitionMap _instance;
 
-		private TransitionMap() { }
+		private TransitionMap()
+		{
+		}
 
 		public static TransitionMap GetInstance()
 		{
-			if (m_instance == null)
+			if (_instance == null)
 			{
-				m_instance = new TransitionMap();
+				_instance = new TransitionMap();
 			}
-			return m_instance;
+			return _instance;
 		}
-		
+
 		public static void Add<TIdentity, TResponse>(StateTransition transition)
 			where TIdentity : IScreen
 			where TResponse : IScreen
@@ -46,7 +48,6 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 				instance[typeof(TIdentity)].Add(transition, typeof(TResponse));
 			}
 		}
-
 
 		public static Type GetNextScreenType(BaseViewModel screenThatClosed)
 		{

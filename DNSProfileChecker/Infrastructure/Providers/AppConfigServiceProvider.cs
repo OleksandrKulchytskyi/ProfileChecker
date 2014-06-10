@@ -1,9 +1,6 @@
 ﻿using Nuance.Radiology.DNSProfileChecker.Infrastructure.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common = DNSProfileChecker.Common;
 
 namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Providers

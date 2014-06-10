@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <workflows>
-	<workflow name="current" type="DNSProfileChecker.Workflow.ProfileCurrentWorkflow, DNSProfileChecker.Workflow" important="1"/>
-	<workflow name="topic" type="DNSProfileChecker.Workflow.TopicVerifyWorkflow, DNSProfileChecker.Workflow" important="1"/>
+	<workflow name="current" type="DNSProfileChecker.Workflow.ProfileCurrentWorkflow, DNSProfileChecker.Workflow" important="1" />
+	<workflow name="topic" type="DNSProfileChecker.Workflow.TopicVerifyWorkflow, DNSProfileChecker.Workflow" important="1" />
 	<workflow name="acoustic" type="DNSProfileChecker.Workflow.AcousticWorkflow, DNSProfileChecker.Workflow" important="1">
 		<subsequent>
 			<workflow name="smallContainer" type="DNSProfileChecker.Workflow.SmallContainerWorkflow, DNSProfileChecker.Workflow" important="1">
 				<subsequent>
-					<workflow name="sessionFolder" type="DNSProfileChecker.Workflow.SessionVerifierWorkflow, DNSProfileChecker.Workflow" important="1"/>
+					<workflow name="sessionFolder" type="DNSProfileChecker.Workflow.SessionVerifierWorkflow, DNSProfileChecker.Workflow" important="1" />
 				</subsequent>
 			</workflow>
-			<workflow name="bigContainer" type="DNSProfileChecker.Workflow.BigContainerWorkflow, DNSProfileChecker.Workflow" important="1"/>
+			<workflow name="bigContainer" type="DNSProfileChecker.Workflow.BigContainerWorkflow, DNSProfileChecker.Workflow" important="1" />
 		</subsequent>
 	</workflow>
 </workflows>

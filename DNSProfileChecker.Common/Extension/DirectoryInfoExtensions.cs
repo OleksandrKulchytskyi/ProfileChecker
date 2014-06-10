@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace DNSProfileChecker.Common
 {
@@ -26,7 +21,6 @@ namespace DNSProfileChecker.Common
 			else
 				return -1;
 		}
-
 
 		public static void CopyFrom(this DirectoryInfo destination, DirectoryInfo source)
 		{

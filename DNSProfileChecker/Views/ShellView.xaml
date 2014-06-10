@@ -6,25 +6,25 @@
         Title="DNS Profile Checker" Height="710" Width="850" WindowStyle="ToolWindow" ResizeMode="NoResize">
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="0.9*"/>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="0.9*" />
 		</Grid.RowDefinitions>
-		<ContentControl Name="ActiveItem" VerticalAlignment="Stretch" Height="362" Grid.Row="0"/>
+		<ContentControl Name="ActiveItem" VerticalAlignment="Stretch" Height="362" Grid.Row="0" />
 		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True">
 			<ListView.Resources>
-				<conv:SeverityToImageConverter x:Key="imageConverter"/>
+				<conv:SeverityToImageConverter x:Key="imageConverter" />
 			</ListView.Resources>
 			<ListView.View>
 				<GridView>
-					<GridViewColumn Width="70" Header="Severity" >
+					<GridViewColumn Width="70" Header="Severity">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
-								<Image Source="{Binding Path=Severity, Converter={StaticResource imageConverter}}"  Width="23" Height="18"/>
+								<Image Source="{Binding Path=Severity, Converter={StaticResource imageConverter}}"  Width="23" Height="18" />
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Width="765" Header="Message" DisplayMemberBinding="{Binding Message}"/>
-					<!--<GridViewColumn Width="188" Header="Error" DisplayMemberBinding="{Binding Error}"/>-->
+					<GridViewColumn Width="765" Header="Message" DisplayMemberBinding="{Binding Message}" />
+					<!--<GridViewColumn Width="188" Header="Error" DisplayMemberBinding="{Binding Error}" />-->
 				</GridView>
 			</ListView.View>
 		</ListView>

@@ -5,6 +5,6 @@ namespace DNSProfileChecker.Common
 {
 	public interface IServiceProvider
 	{
-		Dictionary<Type, Tuple<Type,int>> GetServices();
+		Dictionary<Type, Tuple<Type, int>> GetServices();
 	}
 }

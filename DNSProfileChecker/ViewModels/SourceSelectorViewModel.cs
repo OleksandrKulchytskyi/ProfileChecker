@@ -9,21 +9,23 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 	{
 		private readonly WorkflowState _state;
 		private readonly ILogger _aggregator;
+
 		public SourceSelectorViewModel(WorkflowState state)
 			: base(state)
 		{
 			_state = state;
-			if (_state.SourcePath.IsNotNullOrEmpty())
-				ProfileSource = _state.SourcePath;
-
 			_aggregator = IoC.Get<ILogger>();
 
+			if (_state != null && _state.SourcePath.IsNotNullOrEmpty())
+				ProfileSource = _state.SourcePath;
+			else
 #if DEBUG
-			ProfileSource = @"\\dev804\dragonusers";
+				ProfileSource = @"\\dev804\dragonusers";
 #endif
 		}
 
 		private string _profileSource;
+
 		public string ProfileSource
 		{
 			get { return _profileSource; }
@@ -44,7 +46,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				if (!di.Exists)
 				{
 					proceed = false;
-					System.Windows.MessageBox.Show(string.Format("Path {0} doesn't exist.", ProfileSource), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+					System.Windows.MessageBox.Show(string.Format("Path {0} doesn't exist or remote folder is currently unavailable.", ProfileSource), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
 				}
 			}
 			catch (Exception ex)

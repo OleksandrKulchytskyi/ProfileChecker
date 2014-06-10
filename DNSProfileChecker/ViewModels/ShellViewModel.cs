@@ -28,7 +28,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			this.ActivateItem(screen);
 		}
 
-
 		private void initializeMap()
 		{
 			TransitionMap.Add<SourceSelectorViewModel, ProfileFilterViewModel>(StateTransition.SourceSelectorFinished);
@@ -61,6 +60,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		}
 
 		private ObservableCollection<Infrastructure.Messages.LogEntry> _logs;
+
 		public ObservableCollection<Infrastructure.Messages.LogEntry> Logs
 		{
 			get { return _logs; }

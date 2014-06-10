@@ -1,6 +1,5 @@
 ﻿using Caliburn.Micro;
 using DNSProfileChecker.Common;
-using Nuance.Radiology.DNSProfileChecker.Infrastructure.Messages;
 using Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers;
 using Nuance.Radiology.DNSProfileChecker.Models;
 using System;
@@ -35,6 +34,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		}
 
 		private ProfileEntry current;
+
 		public ProfileEntry CurrentProfile
 		{
 			get { return current; }
@@ -46,6 +46,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		}
 
 		private int processed;
+
 		public int ProcessedProfiles
 		{
 			get { return processed; }
@@ -57,6 +58,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		}
 
 		private int overall;
+
 		public int ProfilesOverall
 		{
 			get { return overall; }
@@ -69,6 +71,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 		public void GoPrevious()
 		{
+			this.WorkflowState = _state;
 			this.NextTransition = Models.StateTransition.ProfileFiltering;
 			this.TryClose();
 		}
@@ -81,7 +84,10 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
-		public void GoNext() { }
+		public void GoNext()
+		{
+		}
+
 		public bool CanGoNext { get { return false; } }
 
 		public async void BeginProcess()
@@ -110,7 +116,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 			if (toProcess == null)
 				toProcess = new ConcurrentQueue<ProfileEntry>(_state.Profiles);
-
 			else if (isStopped && toProcess != null && CurrentProfile != null)
 			{
 				List<ProfileEntry> entries = new List<ProfileEntry>(toProcess.Count + 1);
@@ -191,7 +196,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 					_logger.LogData(LogSeverity.Success, string.Format("Profile {0} has been checked with no error(s).", CurrentProfile.Name), null);
 
 				await Task.Delay(TimeSpan.FromSeconds(1));
-
 			}//end while loop
 
 			CurrentProfile = null;
@@ -227,7 +231,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
-		void NotifyCtrls()
+		private void NotifyCtrls()
 		{
 			NotifyOfPropertyChange(() => CanStopProcess);
 			NotifyOfPropertyChange(() => CanBeginProcess);
@@ -248,6 +252,5 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				}
 			}
 		}
-
 	}
 }

@@ -17,6 +17,5 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers
 
 			return tcs.Task;
 		}
-
 	}
 }
