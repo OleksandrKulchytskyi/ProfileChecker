@@ -39,7 +39,7 @@ namespace DNSProfileChecker.Workflow
 							foreach (FileInfo fi in draFolder.GetFiles("*.*"))
 							{
 								AggregateException exc;
-								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(200), 3, out  exc);
+								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(100), 3, out  exc);
 								if (exc != null)
 									DoLog(LogSeverity.Warn, string.Format("Unable to delete file: {0} ", fi.FullName), exc);
 							}
@@ -53,7 +53,7 @@ namespace DNSProfileChecker.Workflow
 								if (data.ContainsKey("Files"))
 									data.Remove("Files");
 
-								data["Count"] = new List<string>() { "seqNo=0" };
+								data["Count"] = new List<string>() { "SeqNo=0" };
 								data["Files"] = new List<string>();
 								draINI.Delete();
 
@@ -66,15 +66,31 @@ namespace DNSProfileChecker.Workflow
 										{
 											sw.WriteLine(item);
 										}
+										sw.WriteLine(Environment.NewLine);
 									}
 									sw.Flush();
 								}
 							}
 							else
+							{
 								DoLog(LogSeverity.Warn, string.Format("drafiles.ini doesn't exist in folder: {0}", sessionDi.FullName), null);
+
+								try
+								{
+									IFileFactory factory = new Common.Factories.FileFactory();
+									StreamWriter sw = factory.CreateFile(draINI.FullName, FileFactoryEnum.DRAFilesINI);
+									sw.Flush();
+									sw.Dispose();
+									DoLog(LogSeverity.Success, "drafiles.ini has been successfully created.", null);
+								}
+								catch (Exception ex)
+								{
+									DoLog(LogSeverity.Error, "Unable to create drafiles.ini file.", ex);
+								}
+							}
 						}
 						else
-							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contain folder drafiles ", sessionDi.FullName), null);
+							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contains folder named Drafiles.", sessionDi.FullName), null);
 
 					}
 				}

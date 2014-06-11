@@ -45,11 +45,13 @@
     <Compile Include="Extension\DirectoryInfoExtensions.cs" />
     <Compile Include="Extension\Ensure.cs" />
     <Compile Include="Extension\StringExtension.cs" />
+    <Compile Include="Factories\FileFactory.cs" />
     <Compile Include="Implementation\AppConfigLogAggregator.cs" />
     <Compile Include="Implementation\FolderReorderManager.cs" />
     <Compile Include="Implementation\SessionFoldersSequenceValidator.cs" />
     <Compile Include="Implementation\XmlWorkflowProvider.cs" />
     <Compile Include="IniParser.cs" />
+    <Compile Include="Interfaces\IFileFactory.cs" />
     <Compile Include="Interfaces\ILogAggregator.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IProfileWorkflow.cs" />

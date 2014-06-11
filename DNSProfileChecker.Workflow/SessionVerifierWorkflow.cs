@@ -1,4 +1,5 @@
 ﻿using DNSProfileChecker.Common;
+using System;
 using System.IO;
 
 namespace DNSProfileChecker.Workflow
@@ -15,6 +16,7 @@ namespace DNSProfileChecker.Workflow
 			Ensure.Argument.NotNull(parameter, "parameter value cannot be a null.");
 			string folderPath = parameter as string;
 			bool isWarned = false;
+			IFileFactory fact = new Common.Factories.FileFactory();
 
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
 			if (!draFolder.Exists && IsImportant)
@@ -31,17 +33,46 @@ namespace DNSProfileChecker.Workflow
 			}
 
 			FileInfo draIniFile = new FileInfo(Path.Combine(folderPath, "drafiles.ini"));
-			if (!draIniFile.Exists && IsImportant)
+			if (!draIniFile.Exists)
 			{
-				State = WorkflowStates.Failed;
+				isWarned = true;
 				Description = string.Format("File drafiles.ini doesn't exist in the root folder: {0}", folderPath);
 				DoLog(LogSeverity.Error, Description, null);
-				return;
+
+				StreamWriter sw = null;
+				try
+				{
+					sw = fact.CreateFile(draIniFile.FullName, FileFactoryEnum.DRAFilesINI);
+					sw.Flush();
+					DoLog(LogSeverity.Success, "File drafiles.ini has been successfully created.", null);
+				}
+				catch (Exception ex)
+				{
+					State = WorkflowStates.Failed;
+					DoLog(LogSeverity.Error, "Unable to create drafiles.ini file.", ex);
+				}
+				finally { if (sw != null) sw.Dispose(); }
 			}
-			else if (!draFolder.Exists && !IsImportant)
+
+			FileInfo acarchiveINI = new FileInfo(Path.Combine(folderPath, "acarchive.ini"));
+			if (!acarchiveINI.Exists)
 			{
-				DoLog(LogSeverity.Warn, string.Format("File drafiles.ini doesn't exist in the root folder: {0}", folderPath), null);
 				isWarned = true;
+				Description = string.Format("File acarchive.ini doesn't exist in the root folder: {0}", folderPath);
+				DoLog(LogSeverity.Error, Description, null);
+
+				StreamWriter sw = null;
+				try
+				{
+					sw = fact.CreateFile(acarchiveINI.FullName, FileFactoryEnum.AcarchiveINI);
+					DoLog(LogSeverity.Success, "File acarchive.ini has been successfully created.", null);
+				}
+				catch (Exception ex)
+				{
+					State = WorkflowStates.Failed;
+					DoLog(LogSeverity.Error, "Unable to create acarchive.ini file.", ex);
+				}
+				finally { if (sw != null) sw.Dispose(); }
 			}
 
 			FileInfo acarchiveNWM = new FileInfo(Path.Combine(folderPath, "acarchive.nwv"));
