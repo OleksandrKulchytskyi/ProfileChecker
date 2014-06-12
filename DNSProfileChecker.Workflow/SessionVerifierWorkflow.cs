@@ -32,6 +32,7 @@ namespace DNSProfileChecker.Workflow
 				isWarned = true;
 			}
 
+			//check for existance of drafiles.ini
 			FileInfo draIniFile = new FileInfo(Path.Combine(folderPath, "drafiles.ini"));
 			if (!draIniFile.Exists)
 			{
@@ -54,6 +55,7 @@ namespace DNSProfileChecker.Workflow
 				finally { if (sw != null) sw.Dispose(); }
 			}
 
+			//check for existance of acarchive.ini
 			FileInfo acarchiveINI = new FileInfo(Path.Combine(folderPath, "acarchive.ini"));
 			if (!acarchiveINI.Exists)
 			{
@@ -75,6 +77,7 @@ namespace DNSProfileChecker.Workflow
 				finally { if (sw != null) sw.Dispose(); }
 			}
 
+			//check for existance of files with extensions: nwv and enwv 
 			FileInfo acarchiveNWM = new FileInfo(Path.Combine(folderPath, "acarchive.nwv"));
 			FileInfo acarchiveENWM = new FileInfo(Path.Combine(folderPath, "acarchive.enwv"));
 			bool missedBoth = (!acarchiveENWM.Exists && !acarchiveNWM.Exists);

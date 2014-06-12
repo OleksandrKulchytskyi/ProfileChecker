@@ -3,13 +3,15 @@ using System.IO;
 
 namespace Nuance.Radiology.DNSProfileChecker.Models
 {
-	public sealed class ProfileEntry
+	public sealed class ProfileEntry : Caliburn.Micro.PropertyChangedBase
 	{
 		private DirectoryInfo _di;
 
 		public ProfileEntry(string path)
 		{
 			_di = new DirectoryInfo(path);
+			NotifyOfPropertyChange(() => Name);
+			NotifyOfPropertyChange(() => FullPath);
 		}
 
 		public String FullPath
@@ -27,6 +29,18 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 				return _di.Name;
 			}
 		}
+
+		private bool selected;
+		public bool IsSelected
+		{
+			get { return selected; }
+			set
+			{
+				selected = value;
+				base.NotifyOfPropertyChange(() => IsSelected);
+			}
+		}
+
 
 		public bool IsExists
 		{

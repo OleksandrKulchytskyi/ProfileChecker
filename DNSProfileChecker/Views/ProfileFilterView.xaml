@@ -29,23 +29,35 @@
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Avaliable profiles:" />
 				<TextBlock Text="Profiles to be checked:" Grid.Column="2" />
+				<StackPanel Grid.Row="1">
+					<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+							  VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}" DockPanel.Dock="Top" Height="245" >
+						<!--<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>-->
+						<ListBox.ItemContainerStyle>
+							<Style TargetType="{x:Type ListBoxItem}">
+								<Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+							</Style>
+						</ListBox.ItemContainerStyle>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<!--<Image Source="{StaticResource folderImg}" />-->
+									<Label Content="{Binding Name}" />
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+					<StackPanel Orientation="Horizontal" Height="23" HorizontalAlignment="Center">
+						<Button x:Name="SelectAll" Content="Select all" />
+						<Button x:Name="DeselectAll" Content="Deselect all" />
+					</StackPanel>
+				</StackPanel>
 
-				<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
-						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}">
-					<!--<ListBox.ItemsPanel>
-						<ItemsPanelTemplate>
-							<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
-						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>-->
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
-								<!--<Image Source="{StaticResource folderImg}" />-->
-								<Label Content="{Binding Name}" />
-							</StackPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
 
 				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
 					<Button x:Name="MoveToCheck" Content="{Binding ToCheckContent}"></Button>
@@ -53,7 +65,8 @@
 				</StackPanel>
 
 				<ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding ProfilesToCheck}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
-						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedToCheck}">
+						 VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedToCheck}" >
 					<!--<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
 							<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />

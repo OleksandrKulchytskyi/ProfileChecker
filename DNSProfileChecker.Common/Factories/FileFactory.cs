@@ -5,7 +5,7 @@ namespace DNSProfileChecker.Common.Factories
 {
 	public class FileFactory : IFileFactory
 	{
-		public System.IO.StreamWriter CreateFile(string fpath, FileFactoryEnum type)
+		public StreamWriter CreateFile(string fpath, FileFactoryEnum type)
 		{
 			Ensure.Argument.NotNull(fpath, "file path cannot be a null.");
 
@@ -14,7 +14,7 @@ namespace DNSProfileChecker.Common.Factories
 			{
 				case FileFactoryEnum.DRAFilesINI:
 					sw.WriteLine("[Files]");
-					sw.WriteLine(Environment.NewLine);
+					sw.WriteLine(Environment.NewLine); // guided by the Scott's request, inserting line-brake between sections 
 					sw.WriteLine("[Count]");
 					sw.WriteLine("SeqNo=0");
 					break;

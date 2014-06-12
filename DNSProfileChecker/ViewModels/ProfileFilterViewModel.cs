@@ -41,6 +41,8 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			NotifyOfPropertyChange(() => CanMoveToCheck);
 			NotifyOfPropertyChange(() => CanGoNext);
+			NotifyOfPropertyChange(() => CanSelectAll);
+			NotifyOfPropertyChange(() => CanDeselectAll);
 		}
 
 		private string toDismiss;
@@ -119,6 +121,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			{
 				profiles = await provider.GetProfiles(_state.SourcePath);
 				AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
+
 				_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
 			}
 			catch (Exception ex)
@@ -127,7 +130,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 			finally
 			{
-				NotifyOfPropertyChange(() => AvaliableProfiles);
+				RefreshData();
 			}
 		}
 
@@ -162,6 +165,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			foreach (ProfileEntry pe in toProcess)
 			{
 				AvaliableProfiles.Add(pe);
+				pe.IsSelected = false;
 			}
 			foreach (ProfileEntry pe in toProcess)
 			{
@@ -183,6 +187,8 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			NotifyOfPropertyChange(() => AvaliableProfiles);
 			NotifyOfPropertyChange(() => ProfilesToCheck);
+			NotifyOfPropertyChange(() => CanSelectAll);
+			NotifyOfPropertyChange(() => CanDeselectAll);
 		}
 
 		public void GoPrevious()
@@ -208,6 +214,35 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			{
 				return (ProfilesToCheck != null && ProfilesToCheck.Count > 0);
 			}
+		}
+
+		public void SelectAll()
+		{
+			if (SelectedAvaliable.Count > 0)
+				SelectedAvaliable.Clear();
+
+			foreach (ProfileEntry pi in AvaliableProfiles)
+				SelectedAvaliable.Add(pi);
+
+			RefreshData();
+		}
+
+		public bool CanSelectAll
+		{
+			get { return (AvaliableProfiles != null && AvaliableProfiles.Count > 0 && (AvaliableProfiles.Count != SelectedAvaliable.Count)); }
+		}
+
+		public void DeselectAll()
+		{
+			if (SelectedAvaliable != null && SelectedAvaliable.Count > 0)
+				SelectedAvaliable.Clear();
+
+			RefreshData();
+		}
+
+		public bool CanDeselectAll
+		{
+			get { return (SelectedAvaliable != null && SelectedAvaliable.Count > 0); }
 		}
 
 		private void FreeSelectedSubscription()

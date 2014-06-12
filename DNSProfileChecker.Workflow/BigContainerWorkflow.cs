@@ -41,7 +41,7 @@ namespace DNSProfileChecker.Workflow
 								AggregateException exc;
 								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(100), 3, out  exc);
 								if (exc != null)
-									DoLog(LogSeverity.Warn, string.Format("Unable to delete file: {0} ", fi.FullName), exc);
+									DoLog(LogSeverity.Warn, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
 							}
 
 							FileInfo draINI = new FileInfo(Path.Combine(sessionDi.FullName, "drafiles.ini"));
@@ -66,7 +66,7 @@ namespace DNSProfileChecker.Workflow
 										{
 											sw.WriteLine(item);
 										}
-										sw.WriteLine(Environment.NewLine);
+										sw.WriteLine(Environment.NewLine);// guided by the Scott's request, inserting line-brake between sections 
 									}
 									sw.Flush();
 								}
@@ -74,7 +74,6 @@ namespace DNSProfileChecker.Workflow
 							else
 							{
 								DoLog(LogSeverity.Warn, string.Format("drafiles.ini doesn't exist in folder: {0}", sessionDi.FullName), null);
-
 								try
 								{
 									IFileFactory factory = new Common.Factories.FileFactory();
