@@ -29,7 +29,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			_logger = IoC.Get<ILogger>();
 			_provider.Parameters = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Workflows.xml");
 
-			ProfilesOverall = state.Profiles == null ? 0 : state.Profiles.Count;
+			ProfilesOverall = state.ProfilesToCheck == null ? 0 : state.ProfilesToCheck.Count;
 			_logger.LogData(LogSeverity.Info, string.Format("Selected {0} profile(s) for checking.", ProfilesOverall), null);
 		}
 
@@ -115,7 +115,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 
 			if (toProcess == null)
-				toProcess = new ConcurrentQueue<ProfileEntry>(_state.Profiles);
+				toProcess = new ConcurrentQueue<ProfileEntry>(_state.ProfilesToCheck);
 			else if (isStopped && toProcess != null && CurrentProfile != null)
 			{
 				List<ProfileEntry> entries = new List<ProfileEntry>(toProcess.Count + 1);

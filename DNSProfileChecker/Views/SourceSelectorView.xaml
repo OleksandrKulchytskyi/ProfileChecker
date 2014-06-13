@@ -3,19 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
+             xmlns:cal="http://www.caliburnproject.org"
+			 mc:Ignorable="d"
+			cal:Message.Attach="[Event Loaded]=[Action OnLoaded($this)]"
              d:DesignHeight="342" d:DesignWidth="520">
 
 	<GroupBox Header="Profiles source path:">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition />
-
 				<RowDefinition Height="0.08*" />
 			</Grid.RowDefinitions>
 			<Button x:Name="GoNext" Grid.Row="1" Width="60">Next</Button>
 			<TextBlock HorizontalAlignment="Left" Margin="20,22,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
-			<TextBox HorizontalAlignment="Left" Height="23" Margin="24,54,0,0" TextWrapping="Wrap" Text="{Binding Path=ProfileSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="287" />
+			<ComboBox HorizontalAlignment="Left" Height="23" Margin="24,54,0,0" VerticalAlignment="Top" Width="287" IsEditable="True" TextSearch.TextPath="Path"
+					  ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedResult}" Text="{Binding Path=ProfileSource, Mode=TwoWay}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 			<Button Content="Browse..." HorizontalAlignment="Left" Margin="332,54,0,0" VerticalAlignment="Top" Width="75" x:Name="Browse" />
 		</Grid>
 	</GroupBox>

@@ -2,6 +2,10 @@
 using DNSProfileChecker.Common;
 using Nuance.Radiology.DNSProfileChecker.Models;
 using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
@@ -15,13 +19,24 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			_state = state;
 			_aggregator = IoC.Get<ILogger>();
+			_state.IsProfilesLoaded = false;
 
 			if (_state != null && _state.SourcePath.IsNotNullOrEmpty())
 				ProfileSource = _state.SourcePath;
-			else
-#if DEBUG
-				ProfileSource = @"\\dev804\dragonusers";
-#endif
+
+			SearchResults = new ObservableCollection<SearchResult>();
+		}
+
+		private ObservableCollection<SearchResult> searchResults;
+
+		public ObservableCollection<SearchResult> SearchResults
+		{
+			get { return searchResults; }
+			set
+			{
+				searchResults = value;
+				NotifyOfPropertyChange(() => SearchResults);
+			}
 		}
 
 		private string _profileSource;
@@ -37,16 +52,64 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
+		private SearchResult _Selected;
+		public SearchResult SelectedResult
+		{
+			get { return _Selected; }
+			set
+			{
+				_Selected = value;
+				NotifyOfPropertyChange(() => SelectedResult);
+				base.NotifyOfPropertyChange(() => CanGoNext);
+			}
+		}
+
+		public async void OnLoaded(DependencyObject obj)
+		{
+			FileInfo fi = new FileInfo("searchresults.dat");
+			if (fi.Exists)
+			{
+				using (StreamReader sr = fi.OpenText())
+				{
+					string line = null;
+					while ((line = await sr.ReadLineAsync()) != null)
+					{
+						SearchResults.Add(new SearchResult() { Path = line });
+					}
+				}
+			}
+			else
+				using (fi.CreateText()) { }
+
+			NotifyOfPropertyChange(() => SearchResults);
+		}
+
 		public void GoNext()
 		{
+			System.Threading.Tasks.Task.Factory.StartNew(() =>
+			{
+				SearchResult result;
+				if (ProfileSource.IsNotNullOrEmpty() && (result = SearchResults.FirstOrDefault(x => x.Path == ProfileSource)) == null)
+				{
+					FileInfo fi = new FileInfo("searchresults.dat");
+					if (fi.Exists)
+					{
+						using (StreamWriter sw = fi.AppendText())
+						{
+							sw.WriteLine(ProfileSource);
+						}
+					}
+				}
+			});
+
 			bool proceed = true;
 			try
 			{
-				var di = new System.IO.DirectoryInfo(ProfileSource);
+				var di = new DirectoryInfo(ProfileSource);
 				if (!di.Exists)
 				{
 					proceed = false;
-					System.Windows.MessageBox.Show(string.Format("Path {0} doesn't exist or remote folder is currently unavailable.", ProfileSource), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+					MessageBox.Show(string.Format("Path {0} doesn't exist or remote folder is currently unavailable.", ProfileSource), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 			}
 			catch (Exception ex)
@@ -58,11 +121,17 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (!proceed)
 				return;
 
-			proceed = false;
 			_aggregator.LogData(LogSeverity.Info, string.Format("Source folder: {0}", ProfileSource), null);
-
 			this.NextTransition = Models.StateTransition.SourceSelectorFinished;
 			_state.SourcePath = ProfileSource;
+			_state.ClearState();
+
+			if (SelectedResult != null)
+			{
+				if (ProfileSource != SelectedResult.Path)
+					_state.SourcePath = SelectedResult.Path;
+			}
+
 			this.TryClose();
 		}
 
@@ -70,7 +139,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			get
 			{
-				return ProfileSource.IsNotNullOrEmpty();
+				return (ProfileSource.IsNotNullOrEmpty() || (SelectedResult != null));
 			}
 		}
 

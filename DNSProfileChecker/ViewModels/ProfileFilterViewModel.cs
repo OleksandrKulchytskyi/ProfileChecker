@@ -26,6 +26,14 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			SelectedToCheck.CollectionChanged += SelectedToCheck_CollectionChanged;
 			SelectedAvaliable.CollectionChanged += SelectedAvaliable_CollectionChanged;
 
+			if (_state.IsProfilesLoaded && _state.PreviouslySelectedProfiles!=null)
+			{
+				foreach (ProfileEntry item in _state.PreviouslySelectedProfiles)
+				{
+					SelectedAvaliable.Add(item);
+				}
+			}
+
 			ProfilesToCheck = new ObservableCollection<ProfileEntry>();
 			ToCheckContent = ">>";
 			ToAvaliableContent = "<<";
@@ -117,15 +125,26 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			IDNSSourceProvider provider = IoC.Get<IDNSSourceProvider>();
 			List<string> profiles = null;
+			
 			try
 			{
-				profiles = await provider.GetProfiles(_state.SourcePath);
-				AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
+				if (!_state.IsProfilesLoaded)
+				{
+					profiles = await provider.GetProfiles(_state.SourcePath);
+					AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
+					_state.IsProfilesLoaded = true;
 
-				_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
+					_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
+				}
+				else 
+				{
+					AvaliableProfiles = new ObservableCollection<ProfileEntry>(_state.OldAvaliable.OrderBy(p => p.Name));
+					ProfilesToCheck = new ObservableCollection<ProfileEntry>(_state.OldToCheck);
+				}
 			}
 			catch (Exception ex)
 			{
+				_state.IsProfilesLoaded = false;
 				_logger.LogData(LogSeverity.Error, "Error has been ocurred during retrieving profiles.", ex);
 			}
 			finally
@@ -145,6 +164,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			foreach (ProfileEntry pe in toProcess)
 			{
 				AvaliableProfiles.Remove(pe);
+				pe.IsSelected = false;
 			}
 
 			RefreshData();
@@ -202,9 +222,15 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		public void GoNext()
 		{
 			FreeSelectedSubscription();
+
 			this.NextTransition = Models.StateTransition.ProfileFilteringFinished;
 			this.WorkflowState = _state;
-			_state.Profiles = ProfilesToCheck.ToList();
+			
+			_state.ProfilesToCheck = ProfilesToCheck.ToList();
+			_state.OldToCheck = ProfilesToCheck.ToList();
+			_state.OldAvaliable = AvaliableProfiles.ToList();
+			_state.PreviouslySelectedProfiles = SelectedAvaliable.ToList();
+
 			this.TryClose();
 		}
 

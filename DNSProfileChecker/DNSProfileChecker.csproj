@@ -79,6 +79,7 @@
     <Compile Include="Infrastructure\Providers\AppConfigServiceProvider.cs" />
     <Compile Include="Infrastructure\Providers\DNSProfilesProvider.cs" />
     <Compile Include="Infrastructure\TwoListSynchronizer.cs" />
+    <Compile Include="Models\PreviousRoot.cs" />
     <Compile Include="Models\ProfileEntry.cs" />
     <Compile Include="Models\WorkflowState.cs" />
     <Compile Include="ViewModels\ProfileOptimizationViewModel.cs" />
