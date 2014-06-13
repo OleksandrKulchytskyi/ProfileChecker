@@ -32,7 +32,7 @@
 				<StackPanel Grid.Row="1">
 					<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
 							  VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True"
-						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}" DockPanel.Dock="Top" Height="245" >
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}" DockPanel.Dock="Top" Height="246" >
 						<!--<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
@@ -53,8 +53,8 @@
 						</ListBox.ItemTemplate>
 					</ListBox>
 					<StackPanel Orientation="Horizontal" Height="23" HorizontalAlignment="Center">
-						<Button x:Name="SelectAll" Content="Select all" />
-						<Button x:Name="DeselectAll" Content="Deselect all" />
+						<Button x:Name="SelectAll" Content="Select all" Width="67"/>
+						<Button x:Name="DeselectAll" Content="Deselect all" Margin="2,0,0,0" Width="67"/>
 					</StackPanel>
 				</StackPanel>
 
