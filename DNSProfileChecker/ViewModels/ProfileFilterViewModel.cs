@@ -139,7 +139,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				else 
 				{
 					AvaliableProfiles = new ObservableCollection<ProfileEntry>(_state.OldAvaliable.OrderBy(p => p.Name));
-					ProfilesToCheck = new ObservableCollection<ProfileEntry>(_state.OldToCheck);
+					ProfilesToCheck = new ObservableCollection<ProfileEntry>(_state.ProfilesToCheck);
 				}
 			}
 			catch (Exception ex)
@@ -227,7 +227,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			this.WorkflowState = _state;
 			
 			_state.ProfilesToCheck = ProfilesToCheck.ToList();
-			_state.OldToCheck = ProfilesToCheck.ToList();
 			_state.OldAvaliable = AvaliableProfiles.ToList();
 			_state.PreviouslySelectedProfiles = SelectedAvaliable.ToList();
 

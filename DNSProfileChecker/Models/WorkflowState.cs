@@ -8,9 +8,9 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 
 		public List<ProfileEntry> ProfilesToCheck { get; set; }
 
-		public List<ProfileEntry> PreviouslySelectedProfiles { get; set; }
 		public List<ProfileEntry> OldAvaliable { get; set; }
-		public List<ProfileEntry> OldToCheck { get; set; }
+		public List<ProfileEntry> PreviouslySelectedProfiles { get; set; }
+
 		/// <summary>
 		/// Flag indicating that profiles have been already loaded for some specific path
 		/// </summary>
@@ -21,7 +21,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 		{
 			IsProfilesLoaded = false;
 			OldAvaliable = null;
-			OldToCheck = null;
+			ProfilesToCheck = null;
 			PreviouslySelectedProfiles = null;
 		}
 	}
