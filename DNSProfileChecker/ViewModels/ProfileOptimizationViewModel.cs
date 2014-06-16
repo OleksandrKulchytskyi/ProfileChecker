@@ -195,7 +195,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				if (isProfileCorrect)
 					_logger.LogData(LogSeverity.Success, string.Format("Profile {0} has been checked with no error(s).", CurrentProfile.Name), null);
 
-				await Task.Delay(TimeSpan.FromSeconds(1));
+				await TaskHelper.Delay((int)TimeSpan.FromSeconds(1).TotalMilliseconds);
 			}//end while loop
 
 			CurrentProfile = null;

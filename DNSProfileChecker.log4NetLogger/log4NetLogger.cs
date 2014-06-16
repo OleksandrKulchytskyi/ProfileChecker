@@ -1,6 +1,7 @@
 ﻿using DNSProfileChecker.Common;
 using log4net;
 using System;
+using System.Reflection;
 using System.Collections;
 using System.Linq;
 using System.Text;
@@ -80,13 +81,10 @@ namespace DNSProfileChecker.log4NetLogger
 
 			Action<string> append = (prop) =>
 			{
-				var propInfo = exception.GetType().GetProperty(prop);
-				var val = propInfo.GetValue(exception);
-
+				PropertyInfo propInfo = exception.GetType().GetProperty(prop);
+				var val = propInfo.GetValue(exception, null);
 				if (val != null)
-				{
 					builderToFill.AppendFormat("{0}{1}: {2}{3}", indent, prop, val.ToString(), Environment.NewLine);
-				}
 			};
 
 			append("Message");

@@ -4,19 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
-			 mc:Ignorable="d"
+			mc:Ignorable="d"
 			cal:Message.Attach="[Event Loaded]=[Action OnLoaded($this)]"
-             d:DesignHeight="342" d:DesignWidth="520">
+			d:DesignHeight="340" d:DesignWidth="520">
 
 	<GroupBox Header="Profiles source path:">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition />
-				<RowDefinition Height="0.08*" />
+				<RowDefinition Height="0.09*" />
 			</Grid.RowDefinitions>
-			<Button x:Name="GoNext" Grid.Row="1" Width="60">Next</Button>
+			<Button x:Name="GoNext" Grid.Row="1" Width="60" Margin="0,0,0,0">Next</Button>
 			<TextBlock HorizontalAlignment="Left" Margin="20,22,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
-			<ComboBox HorizontalAlignment="Left" Height="23" Margin="24,54,0,0" VerticalAlignment="Top" Width="287" IsEditable="True" TextSearch.TextPath="Path"
+			<ComboBox HorizontalAlignment="Left" Height="23" Margin="10,54,0,0" VerticalAlignment="Top" Width="317" IsEditable="True" TextSearch.TextPath="Path"
 					  ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedResult}" Text="{Binding Path=ProfileSource, Mode=TwoWay}">
 				<ComboBox.ItemTemplate>
 					<DataTemplate>

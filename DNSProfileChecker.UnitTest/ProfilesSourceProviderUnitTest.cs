@@ -12,8 +12,9 @@ namespace DNSProfileChecker.UnitTest
 		[TestMethod]
 		public void TestDNSProfilesProvider()
 		{
+			IProfileAssurance assurance = new Common.Implementation.ProfileAssurance();
 			IDNSSourceProvider provider = new Nuance.Radiology.DNSProfileChecker.Infrastructure.Providers.DNSProfilesProvider();
-			Task<List<string>> profilesTask = provider.GetProfiles(@"\\dev804\dragonUsers");
+			Task<List<string>> profilesTask = provider.GetProfiles(@"\\dev804\dragonUsers", assurance);
 			try
 			{
 				profilesTask.Wait();

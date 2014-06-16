@@ -10,7 +10,7 @@
 			<RowDefinition Height="0.9*" />
 		</Grid.RowDefinitions>
 		<ContentControl Name="ActiveItem" VerticalAlignment="Stretch" Height="362" Grid.Row="0" />
-		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True">
+		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True" Margin="0,4,0,0">
 			<ListView.Resources>
 				<conv:SeverityToImageConverter x:Key="imageConverter" />
 			</ListView.Resources>
@@ -24,7 +24,6 @@
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
 					<GridViewColumn Width="765" Header="Message" DisplayMemberBinding="{Binding Message}" />
-					<!--<GridViewColumn Width="188" Header="Error" DisplayMemberBinding="{Binding Error}" />-->
 				</GridView>
 			</ListView.View>
 		</ListView>

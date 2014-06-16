@@ -26,7 +26,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			SelectedToCheck.CollectionChanged += SelectedToCheck_CollectionChanged;
 			SelectedAvaliable.CollectionChanged += SelectedAvaliable_CollectionChanged;
 
-			if (_state.IsProfilesLoaded && _state.PreviouslySelectedProfiles!=null)
+			if (_state.IsProfilesLoaded && _state.PreviouslySelectedProfiles != null)
 			{
 				foreach (ProfileEntry item in _state.PreviouslySelectedProfiles)
 				{
@@ -125,18 +125,19 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 		{
 			IDNSSourceProvider provider = IoC.Get<IDNSSourceProvider>();
 			List<string> profiles = null;
-			
+
 			try
 			{
 				if (!_state.IsProfilesLoaded)
 				{
-					profiles = await provider.GetProfiles(_state.SourcePath);
+					IProfileAssurance assurance = IoC.Get<IProfileAssurance>();
+					profiles = await provider.GetProfiles(_state.SourcePath, assurance);
 					AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
 					_state.IsProfilesLoaded = true;
 
 					_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
 				}
-				else 
+				else
 				{
 					AvaliableProfiles = new ObservableCollection<ProfileEntry>(_state.OldAvaliable.OrderBy(p => p.Name));
 					ProfilesToCheck = new ObservableCollection<ProfileEntry>(_state.ProfilesToCheck);
@@ -225,7 +226,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 			this.NextTransition = Models.StateTransition.ProfileFilteringFinished;
 			this.WorkflowState = _state;
-			
+
 			_state.ProfilesToCheck = ProfilesToCheck.ToList();
 			_state.OldAvaliable = AvaliableProfiles.ToList();
 			_state.PreviouslySelectedProfiles = SelectedAvaliable.ToList();

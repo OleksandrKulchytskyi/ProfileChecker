@@ -5,6 +5,6 @@ namespace DNSProfileChecker.Common
 {
 	public interface IDNSSourceProvider
 	{
-		Task<List<string>> GetProfiles(string source);
+		Task<List<string>> GetProfiles(string source, IProfileAssurance assurance);
 	}
 }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:cal="http://www.caliburnproject.org"
 			 xmlns:beh="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours"
-             mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="520">
+             mc:Ignorable="d" d:DesignHeight="342" d:DesignWidth="620">
 
 	<GroupBox Header="Select profiles for optimization:" cal:Message.Attach="[Event Loaded]= [Action OnLoaded($this)]">
 		<Grid>
@@ -29,43 +29,38 @@
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Avaliable profiles:" />
 				<TextBlock Text="Profiles to be checked:" Grid.Column="2" />
-				<StackPanel Grid.Row="1">
-					<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
-							  VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True"
-						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}" DockPanel.Dock="Top" Height="246" >
-						<!--<ListBox.ItemsPanel>
+
+
+				<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+							  VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True" Margin="0,0,0,4"
+						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvaliable}" DockPanel.Dock="Top" >
+					<!--<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid IsItemsHost="True" Columns="5" Rows="3" />
 							</ItemsPanelTemplate>
 						</ListBox.ItemsPanel>-->
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="{x:Type ListBoxItem}">
-								<Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
-							</Style>
-						</ListBox.ItemContainerStyle>
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal">
-									<!--<Image Source="{StaticResource folderImg}" />-->
-									<Label Content="{Binding Name}" />
-								</StackPanel>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-					<StackPanel Orientation="Horizontal" Height="23" HorizontalAlignment="Center">
-						<Button x:Name="SelectAll" Content="Select all" Width="67"/>
-						<Button x:Name="DeselectAll" Content="Deselect all" Margin="2,0,0,0" Width="67"/>
-					</StackPanel>
-				</StackPanel>
+					<ListBox.ItemContainerStyle>
+						<Style TargetType="{x:Type ListBoxItem}">
+							<Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+						</Style>
+					</ListBox.ItemContainerStyle>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<!--<Image Source="{StaticResource folderImg}" />-->
+								<Label Content="{Binding Name}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
 
-
-				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
-					<Button x:Name="MoveToCheck" Content="{Binding ToCheckContent}"></Button>
-					<Button x:Name="MoveToAvaliable" Content="{Binding ToAvaliableContent}"></Button>
+				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="2,0,2,0">
+					<Button x:Name="MoveToCheck" Content="{Binding ToCheckContent}" Margin="1,3,1,1" />
+					<Button x:Name="MoveToAvaliable" Content="{Binding ToAvaliableContent}" Margin="1,3,1,1" />
 				</StackPanel>
 
 				<ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding ProfilesToCheck}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
-						 VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True"
+						 VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True" Margin="0,0,0,4"
 						 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedToCheck}" >
 					<!--<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -83,9 +78,23 @@
 				</ListBox>
 			</Grid>
 
-			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button Margin="0,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="60">Previous</Button>
-				<Button Margin="3,2,0,0" x:Name="GoNext"  Width="60">Next</Button>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="0.8*"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<StackPanel Orientation="Horizontal"  HorizontalAlignment="Right">
+					<Button x:Name="SelectAll" Content="Select all" Width="67"/>
+					<Button x:Name="DeselectAll" Content="Deselect all" Margin="4,0,0,0" Width="67"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+					<Button Margin="1,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="60">Previous</Button>
+					<Button Margin="4,2,0,0" x:Name="GoNext"  Width="60">Next</Button>
+				</StackPanel>
+			</Grid>
+
+			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+				
 			</StackPanel>
 		</Grid>
 	</GroupBox>

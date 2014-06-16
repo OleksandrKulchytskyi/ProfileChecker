@@ -11,7 +11,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Providers
 		{
 		}
 
-		public Task<List<string>> GetProfiles(string source)
+		public Task<List<string>> GetProfiles(string source, IProfileAssurance assurance)
 		{
 			Ensure.Argument.NotNull(source, "source");
 			TaskCompletionSource<List<string>> cts = new TaskCompletionSource<List<string>>();
@@ -24,7 +24,11 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Providers
 				{
 					foreach (DirectoryInfo dirInfo in dir.EnumerateDirectories())
 					{
-						result.Add(Path.Combine(source, dirInfo.Name));
+						if (assurance != null)
+							if (assurance.IsProfileFolder(dirInfo.FullName))
+								result.Add(Path.Combine(source, dirInfo.Name));
+							else
+								result.Add(Path.Combine(source, dirInfo.Name));
 					}
 				}
 				return result;

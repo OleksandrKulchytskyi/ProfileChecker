@@ -57,11 +57,11 @@ namespace DNSProfileChecker.Workflow
 
 			//check for existance of acarchive.ini
 			FileInfo acarchiveINI = new FileInfo(Path.Combine(folderPath, "acarchive.ini"));
-			if (!acarchiveINI.Exists)
+			//if (!acarchiveINI.Exists)
 			{
 				isWarned = true;
 				Description = string.Format("File acarchive.ini doesn't exist in the root folder: {0}", folderPath);
-				DoLog(LogSeverity.Error, Description, null);
+				DoLog(LogSeverity.Warn, Description, null);
 
 				StreamWriter sw = null;
 				try
@@ -85,7 +85,7 @@ namespace DNSProfileChecker.Workflow
 			{
 				State = WorkflowStates.Failed;
 				Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
-				DoLog(LogSeverity.Error, Description, null);
+				DoLog(LogSeverity.Warn, Description, null);
 				DoLog(LogSeverity.Warn, string.Format("Folder {0} will be deleted.", folderPath), null);
 				return;
 			}
