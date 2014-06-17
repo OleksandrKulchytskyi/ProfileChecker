@@ -135,7 +135,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 					AvaliableProfiles = new ObservableCollection<ProfileEntry>(profiles.Select(x => new ProfileEntry(x)).OrderBy(p => p.Name));
 					_state.IsProfilesLoaded = true;
 
-					_logger.LogData(LogSeverity.Info, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
+					_logger.LogData(LogSeverity.UI, string.Format("Retrieved {0} profile(s)", AvaliableProfiles.Count), null);
 				}
 				else
 				{
@@ -150,7 +150,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 			finally
 			{
-				RefreshData();
+				RefreshUIData();
 			}
 		}
 
@@ -168,7 +168,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				pe.IsSelected = false;
 			}
 
-			RefreshData();
+			RefreshUIData();
 		}
 
 		public bool CanMoveToCheck
@@ -193,7 +193,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				ProfilesToCheck.Remove(pe);
 			}
 
-			RefreshData();
+			RefreshUIData();
 		}
 
 		public bool CanMoveToAvaliable
@@ -204,7 +204,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
-		private void RefreshData()
+		private void RefreshUIData()
 		{
 			NotifyOfPropertyChange(() => AvaliableProfiles);
 			NotifyOfPropertyChange(() => ProfilesToCheck);
@@ -250,7 +250,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			foreach (ProfileEntry pi in AvaliableProfiles)
 				SelectedAvaliable.Add(pi);
 
-			RefreshData();
+			RefreshUIData();
 		}
 
 		public bool CanSelectAll
@@ -263,7 +263,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (SelectedAvaliable != null && SelectedAvaliable.Count > 0)
 				SelectedAvaliable.Clear();
 
-			RefreshData();
+			RefreshUIData();
 		}
 
 		public bool CanDeselectAll

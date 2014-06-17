@@ -25,10 +25,12 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Providers
 					foreach (DirectoryInfo dirInfo in dir.EnumerateDirectories())
 					{
 						if (assurance != null)
+						{
 							if (assurance.IsProfileFolder(dirInfo.FullName))
 								result.Add(Path.Combine(source, dirInfo.Name));
-							else
-								result.Add(Path.Combine(source, dirInfo.Name));
+						}
+						else
+							result.Add(Path.Combine(source, dirInfo.Name));
 					}
 				}
 				return result;

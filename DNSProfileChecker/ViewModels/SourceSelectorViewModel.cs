@@ -121,7 +121,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (!proceed)
 				return;
 
-			_aggregator.LogData(LogSeverity.Info, string.Format("Source folder: {0}", ProfileSource), null);
+			_aggregator.LogData(LogSeverity.UI, string.Format("Source folder: {0}", ProfileSource), null);
 			this.NextTransition = Models.StateTransition.SourceSelectorFinished;
 			_state.SourcePath = ProfileSource;
 			_state.ClearState();

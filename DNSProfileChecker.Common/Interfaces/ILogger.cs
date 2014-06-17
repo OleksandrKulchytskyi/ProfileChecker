@@ -4,7 +4,8 @@ namespace DNSProfileChecker.Common
 {
 	public enum LogSeverity
 	{
-		Info = 0,
+		Debug = 0,
+		Info,
 		UI,
 		Warn,
 		Error,

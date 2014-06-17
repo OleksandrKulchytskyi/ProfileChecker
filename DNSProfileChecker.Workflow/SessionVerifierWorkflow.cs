@@ -19,17 +19,21 @@ namespace DNSProfileChecker.Workflow
 			IFileFactory fact = new Common.Factories.FileFactory();
 
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
-			if (!draFolder.Exists && IsImportant)
+			if (!draFolder.Exists)
 			{
-				State = WorkflowStates.Failed;
-				Description = string.Format("Folder drafiles doesn't exist in the root folder: {0}", folderPath);
-				DoLog(LogSeverity.Error, Description, null);
-				return;
-			}
-			else if (!draFolder.Exists && !IsImportant)
-			{
-				DoLog(LogSeverity.Warn, string.Format("Folder drafiles doesn't exist in the root folder: {0}", folderPath), null);
+				State = WorkflowStates.Warn;
 				isWarned = true;
+				Description = string.Format("Folder drafiles doesn't exist in the root folder: {0}", folderPath);
+				DoLog(LogSeverity.Warn, Description, null);
+
+				try
+				{
+					Directory.CreateDirectory(draFolder.FullName);
+				}
+				catch (Exception ex)
+				{
+					DoLog(LogSeverity.Error, string.Format("Unable to craete drafiles folder in the root folder: {0}", folderPath), ex);
+				}
 			}
 
 			//check for existance of drafiles.ini
@@ -38,14 +42,14 @@ namespace DNSProfileChecker.Workflow
 			{
 				isWarned = true;
 				Description = string.Format("File drafiles.ini doesn't exist in the root folder: {0}", folderPath);
-				DoLog(LogSeverity.Error, Description, null);
+				DoLog(LogSeverity.Warn, Description, null);
 
 				StreamWriter sw = null;
 				try
 				{
 					sw = fact.CreateFile(draIniFile.FullName, FileFactoryEnum.DRAFilesINI);
 					sw.Flush();
-					DoLog(LogSeverity.Success, "File drafiles.ini has been successfully created.", null);
+					DoLog(LogSeverity.Success, string.Format("File drafiles.ini has been created in the root: {0}", folderPath), null);
 				}
 				catch (Exception ex)
 				{
@@ -57,7 +61,7 @@ namespace DNSProfileChecker.Workflow
 
 			//check for existance of acarchive.ini
 			FileInfo acarchiveINI = new FileInfo(Path.Combine(folderPath, "acarchive.ini"));
-			//if (!acarchiveINI.Exists)
+			if (!acarchiveINI.Exists)
 			{
 				isWarned = true;
 				Description = string.Format("File acarchive.ini doesn't exist in the root folder: {0}", folderPath);
@@ -67,12 +71,12 @@ namespace DNSProfileChecker.Workflow
 				try
 				{
 					sw = fact.CreateFile(acarchiveINI.FullName, FileFactoryEnum.AcarchiveINI);
-					DoLog(LogSeverity.Success, "File acarchive.ini has been successfully created.", null);
+					DoLog(LogSeverity.Success, string.Format("File acarchive.ini has been created in: {0}", folderPath), null);
 				}
 				catch (Exception ex)
 				{
 					State = WorkflowStates.Failed;
-					DoLog(LogSeverity.Error, "Unable to create acarchive.ini file.", ex);
+					DoLog(LogSeverity.Error, string.Format("Unable to create acarchive.ini file in the directory {0}.", folderPath), ex);
 				}
 				finally { if (sw != null) sw.Dispose(); }
 			}
@@ -86,7 +90,16 @@ namespace DNSProfileChecker.Workflow
 				State = WorkflowStates.Failed;
 				Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
 				DoLog(LogSeverity.Warn, Description, null);
-				DoLog(LogSeverity.Warn, string.Format("Folder {0} will be deleted.", folderPath), null);
+
+				try
+				{
+					Directory.Delete(folderPath, true);
+					DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", folderPath), null);
+				}
+				catch (Exception ex)
+				{
+					DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", folderPath), ex);
+				}
 				return;
 			}
 			else

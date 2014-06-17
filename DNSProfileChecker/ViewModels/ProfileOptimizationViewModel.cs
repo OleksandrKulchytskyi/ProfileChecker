@@ -30,7 +30,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			_provider.Parameters = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Workflows.xml");
 
 			ProfilesOverall = state.ProfilesToCheck == null ? 0 : state.ProfilesToCheck.Count;
-			_logger.LogData(LogSeverity.Info, string.Format("Selected {0} profile(s) for checking.", ProfilesOverall), null);
+			_logger.LogData(LogSeverity.UI, string.Format("Selected {0} profile(s) for checking.", ProfilesOverall), null);
 		}
 
 		private ProfileEntry current;
@@ -131,7 +131,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (CurrentProfile == null)
 			{
 				ProcessedProfiles = 0;
-				_logger.LogData(LogSeverity.Info, string.Format("Begin processing DNS profile(s)."), null);
+				_logger.LogData(LogSeverity.UI, string.Format("Begin processing DNS profile(s)."), null);
 			}
 
 			ProfileEntry entry = null;
@@ -144,7 +144,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 				if (isStopped) return;// terminate our process in case when stopped
 
-				_logger.LogData(LogSeverity.Info, string.Format("Begin to process {0} DNS profile.", CurrentProfile.Name), null);
+				_logger.LogData(LogSeverity.UI, string.Format("Begin to process {0} DNS profile.", CurrentProfile.Name), null);
 
 				isProfileCorrect = true;
 				foreach (IProfileWorkflow workflow in workflows)
@@ -194,13 +194,15 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				ProcessedProfiles++;
 				if (isProfileCorrect)
 					_logger.LogData(LogSeverity.Success, string.Format("Profile {0} has been checked with no error(s).", CurrentProfile.Name), null);
+				else
+					_logger.LogData(LogSeverity.UI, string.Format("Profile [{0}] has been verified.", CurrentProfile.Name), null);
 
 				await TaskHelper.Delay((int)TimeSpan.FromSeconds(1).TotalMilliseconds);
 			}//end while loop
 
 			CurrentProfile = null;
 			toProcess = null;
-			_logger.LogData(LogSeverity.Info, "All DNS profile(s) have been checked.", null);
+			_logger.LogData(LogSeverity.UI, "All DNS profile(s) have been checked.", null);
 
 			isStarted = false;
 			isStopped = false;

@@ -12,7 +12,7 @@ namespace DNSProfileChecker.Common.Implementation
 			if (!di.Exists)
 				return false;
 
-			return di.EnumerateDirectories("current", SearchOption.TopDirectoryOnly).FirstOrDefault() != null;
+			return di.EnumerateDirectories("current", SearchOption.TopDirectoryOnly).Any();
 		}
 	}
 }

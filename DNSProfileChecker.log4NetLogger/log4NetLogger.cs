@@ -1,9 +1,9 @@
 ﻿using DNSProfileChecker.Common;
 using log4net;
 using System;
-using System.Reflection;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DNSProfileChecker.log4NetLogger
@@ -29,6 +29,13 @@ namespace DNSProfileChecker.log4NetLogger
 		{
 			switch (severity)
 			{
+				case LogSeverity.Debug:
+					if (ex == null)
+						_logger.Debug(message);
+					_logger.Debug(message, ex);
+					break;
+
+				case LogSeverity.UI:
 				case LogSeverity.Success:
 				case LogSeverity.Info:
 					_logger.Info(message);
