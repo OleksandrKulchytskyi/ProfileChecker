@@ -80,16 +80,16 @@
 
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="0.8*"/>
+					<ColumnDefinition Width="0.83*"/>
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
-				<StackPanel Orientation="Horizontal"  HorizontalAlignment="Right">
+				<StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" >
 					<Button x:Name="SelectAll" Content="Select all" Width="67"/>
 					<Button x:Name="DeselectAll" Content="Deselect all" Margin="4,0,0,0" Width="67"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
-					<Button Margin="1,2,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="60">Previous</Button>
-					<Button Margin="4,2,0,0" x:Name="GoNext"  Width="60">Next</Button>
+					<Button Margin="1,0,0,0"  x:Name="GoPrevious" Grid.Row="1" Width="60">Previous</Button>
+					<Button Margin="4,0,0,0" x:Name="GoNext"  Width="60">Next</Button>
 				</StackPanel>
 			</Grid>
 
