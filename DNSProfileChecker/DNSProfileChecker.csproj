@@ -57,9 +57,11 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.IO">
       <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.IO.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime">
       <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Runtime.dll</HintPath>
@@ -90,14 +92,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Converters\DriveIconConverter.cs" />
     <Compile Include="Converters\OverallProgressValuesConverter.cs" />
     <Compile Include="Converters\ProcessingProfileConverter.cs" />
     <Compile Include="Converters\SeverityToImageConverter.cs" />
     <Compile Include="Infrastructure\Behaviours\ListViewScrollBehavior.cs" />
     <Compile Include="Infrastructure\Behaviours\MultiSelectorBehaviours.cs" />
     <Compile Include="Infrastructure\Configuration\Services.cs" />
+    <Compile Include="Infrastructure\Controls\FolderPickerControl.xaml.cs">
+      <DependentUpon>FolderPickerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Infrastructure\Controls\FolderView.cs" />
+    <Compile Include="Infrastructure\Helpers\LinqExtensions.cs" />
+    <Compile Include="Infrastructure\Helpers\PathNormalizer.cs" />
     <Compile Include="Infrastructure\Helpers\ProfileWorkflowHelper.cs" />
+    <Compile Include="Infrastructure\Helpers\Shares.cs" />
     <Compile Include="Infrastructure\Helpers\TaskHelper.cs" />
     <Compile Include="Infrastructure\Logger\UILogger.cs" />
     <Compile Include="Infrastructure\Messages\LogEntry.cs" />
@@ -106,6 +115,7 @@
     <Compile Include="Infrastructure\TwoListSynchronizer.cs" />
     <Compile Include="Models\PreviousRoot.cs" />
     <Compile Include="Models\ProfileEntry.cs" />
+    <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\WorkflowState.cs" />
     <Compile Include="ViewModels\ProfileOptimizationViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -181,12 +191,24 @@
     <Resource Include="Images\folder.ico" />
     <Resource Include="Images\iconinfo.png" />
     <Resource Include="Images\success.ico" />
+    <Resource Include="Images\shell32_10.ico" />
+    <Resource Include="Images\shell32_12.ico" />
+    <Resource Include="Images\shell32_264.ico" />
+    <Resource Include="Images\shell32_303.ico" />
+    <Resource Include="Images\shell32_8.ico" />
+    <Resource Include="Images\shell32_9.ico" />
+    <Resource Include="Images\_network.ico" />
+    <Resource Include="Images\_desk.ico" />
     <Content Include="Workflows.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Infrastructure\Controls\FolderPickerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ProfileFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

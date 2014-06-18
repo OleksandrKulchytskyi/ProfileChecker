@@ -52,6 +52,21 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
+		TreeItem _selectedFolder;
+		public TreeItem SelectedFolder
+		{
+			get
+			{
+				return _selectedFolder;
+			}
+			set
+			{
+				_selectedFolder = value;
+				NotifyOfPropertyChange(() => SelectedFolder);
+				ProfileSource = Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers.PathNormalizer.NormalizePath(_selectedFolder.GetFullPath(), true);
+			}
+		}
+
 		private SearchResult _Selected;
 		public SearchResult SelectedResult
 		{
