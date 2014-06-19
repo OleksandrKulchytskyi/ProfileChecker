@@ -91,13 +91,15 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls
 
 		}
 
-		DependencyProperty CursorStateProperty = DependencyProperty.Register(
-		"CursorState", typeof(System.Windows.Input.Cursor), typeof(FolderPickerControl), new PropertyMetadata(null));
-
+		private System.Windows.Input.Cursor cursor;
 		public System.Windows.Input.Cursor CursorState
 		{
-			get { return (System.Windows.Input.Cursor)GetValue(CursorStateProperty); }
-			set { SetValue(CursorStateProperty, value); }
+			get { return cursor; }
+			set
+			{
+				cursor = value;
+				NotifyPropertyChanged(() => CursorState);
+			}
 		}
 		#endregion
 
