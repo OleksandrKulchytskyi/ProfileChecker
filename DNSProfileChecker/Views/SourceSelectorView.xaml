@@ -7,7 +7,7 @@
 			xmlns:Controls="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls" x:Class="Nuance.Radiology.DNSProfileChecker.Views.SourceSelectorView"
 			mc:Ignorable="d" x:Name="mainCtrl"
 			cal:Message.Attach="[Event Loaded]=[Action OnLoaded($this)]"
-			d:DesignHeight="340" d:DesignWidth="520">
+			d:DesignHeight="340" d:DesignWidth="570">
 
 	<GroupBox Header="Profiles source path:">
 		<Grid>
@@ -16,8 +16,8 @@
 				<RowDefinition Height="0.09*" />
 			</Grid.RowDefinitions>
 			<Button x:Name="GoNext" Grid.Row="1" Width="60" Margin="0,0,0,0" Content="Next"/>
-			<TextBlock HorizontalAlignment="Left" Margin="20,11,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
-			<ComboBox HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" VerticalAlignment="Top" Width="413" IsEditable="True" TextSearch.TextPath="Path"
+			<TextBlock HorizontalAlignment="Left" Margin="12,7,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
+			<ComboBox HorizontalAlignment="Left" Height="23" Margin="10,29,0,0" VerticalAlignment="Top" Width="515" IsEditable="True" TextSearch.TextPath="Path"
 				ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedResult}" Text="{Binding ProfileSource, Mode=TwoWay}">
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
@@ -25,9 +25,7 @@
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>
-			<Button Content="Browse..." HorizontalAlignment="Left" Margin="428,37,0,0" VerticalAlignment="Top" Width="75" x:Name="Browse" />
-			<Controls:FolderPickerControl HorizontalAlignment="Left" Height="195" Margin="10,76,0,0" VerticalAlignment="Top" Width="413" SelectedFolder="{Binding Path=SelectedFolder, Mode=TwoWay}"/>
-										  <!--DataContext="{Binding ElementName=mainCtrl}"/>-->
+			<Controls:FolderPickerControl HorizontalAlignment="Left" Height="220" Margin="10,62,0,0" VerticalAlignment="Top" Width="515" SelectedFolder="{Binding Path=SelectedFolder, Mode=TwoWay}"/>
 		</Grid>
 	</GroupBox>
 </UserControl>

@@ -70,10 +70,24 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 
 			var ti = this;
 
-			while (ti.Parent != null)
+			while (ti != null && ti.Parent != null)
 			{
-				stack.Push(ti.Name);
-				ti = ti.Parent;
+				if (ti is NetworkComputerTreeItem)
+				{
+					stack.Push(@"\\" + ti.Name);
+					ti = ti.Parent;
+				}
+				else if (!(ti is LocalComputerTreeItem) && !(ti is NetworkTreeItem))
+				{
+					stack.Push(ti.Name);
+					ti = ti.Parent;
+				}
+				else
+				{
+					if ((ti is NetworkTreeItem || ti is LocalComputerTreeItem) && stack.Count == 0)
+						stack.Push(string.Empty);
+					ti = ti.Parent;
+				}
 			}
 
 			string path = stack.Pop();
@@ -107,7 +121,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 	}
 
 
-	public class NetworkTreeItem : TreeItem
+	public sealed class NetworkTreeItem : TreeItem
 	{
 		public DriveType DriveType { get; set; }
 
@@ -118,9 +132,17 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 		}
 	}
 
-	public class NetworkComputerTreeItem : NetworkTreeItem
+	public sealed class NetworkComputerTreeItem : TreeItem
 	{
 		public NetworkComputerTreeItem(string name, TreeItem parent)
+			: base(name, parent)
+		{
+		}
+	}
+
+	public sealed class LocalComputerTreeItem : TreeItem
+	{
+		public LocalComputerTreeItem(string name, TreeItem parent)
 			: base(name, parent)
 		{
 		}

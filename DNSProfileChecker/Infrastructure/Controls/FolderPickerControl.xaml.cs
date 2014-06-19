@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Management;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -83,6 +82,23 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls
 			}
 		}
 
+		public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedFolder", typeof(TreeItem), typeof(FolderPickerControl), null);
+
+		public TreeItem SelectedFolder
+		{
+			get { return (TreeItem)GetValue(SelectedValueProperty); }
+			set { SetValue(SelectedValueProperty, value); }
+
+		}
+
+		DependencyProperty CursorStateProperty = DependencyProperty.Register(
+		"CursorState", typeof(System.Windows.Input.Cursor), typeof(FolderPickerControl), new PropertyMetadata(null));
+
+		public System.Windows.Input.Cursor CursorState
+		{
+			get { return (System.Windows.Input.Cursor)GetValue(CursorStateProperty); }
+			set { SetValue(CursorStateProperty, value); }
+		}
 		#endregion
 
 		public FolderPickerControl()
@@ -135,30 +151,23 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls
 		private void Init()
 		{
 			root = new TreeItem("root", null);
-			var systemDrives = DriveInfo.GetDrives();
+			LocalComputerTreeItem localPC = new LocalComputerTreeItem("Computer", root);
 
-			foreach (var sd in systemDrives)
+			DriveInfo[] systemDrives = DriveInfo.GetDrives();
+			foreach (DriveInfo sd in systemDrives)
 			{
-				var item = new DriveTreeItem(sd.Name, sd.DriveType, root);
+				var item = new DriveTreeItem(sd.Name, sd.DriveType, localPC);
 				item.Childs.Add(new TreeItem(EmptyItemName, item));
-
-				root.Childs.Add(item);
+				localPC.Childs.Add(item);
 			}
+			root.Childs.Add(localPC);
+			localPC.IsFullyLoaded = true;
 
 			NetworkTreeItem network = new NetworkTreeItem("Network", root);
 			network.Childs.Add(new TreeItem(EmptyItemName, network));
 			root.Childs.Add(network);
 
 			Root = root; // to notify UI
-		}
-
-		public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedFolder", typeof(TreeItem), typeof(FolderPickerControl), null);
-
-		public TreeItem SelectedFolder
-		{
-			get { return (TreeItem)GetValue(SelectedValueProperty); }
-			set { SetValue(SelectedValueProperty, value); }
-
 		}
 
 		private void TreeView_Selected(object sender, RoutedEventArgs e)
@@ -211,10 +220,11 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls
 
 					string path = treeItem.GetFullPath();
 
-					if (treeItem is NetworkTreeItem && path.Equals("Network"))
+					if (treeItem is NetworkTreeItem)
 					{
 						try
 						{
+							CursorState = System.Windows.Input.Cursors.Wait;
 							List<string> pcs = await ListNetworkComputers();
 							foreach (string pc in pcs)
 							{
@@ -224,13 +234,21 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Controls
 							}
 						}
 						catch (Exception ex) { MessageBox.Show(ex.Message); }
+						finally { CursorState = null; }
 
 						treeItem.IsFullyLoaded = true;
 						return;
 					}
 					else if (treeItem is NetworkComputerTreeItem)
 					{
-						ShareCollection shi = ShareCollection.GetShares(PathNormalizer.NormalizePath(path, true));
+						ShareCollection shi = null;
+						try
+						{
+							CursorState = System.Windows.Input.Cursors.Wait;
+							shi = await ShareCollection.GetSharesAsync(PathNormalizer.NormalizePath(path, true));
+						}
+						catch { }
+						finally { CursorState = null; }
 						if (shi != null)
 						{
 							foreach (Share si in shi)

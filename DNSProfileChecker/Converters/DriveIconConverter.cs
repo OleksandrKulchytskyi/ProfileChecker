@@ -83,10 +83,10 @@ namespace Nuance.Radiology.DNSProfileChecker.Converters
 						return drive;
 				}
 			}
-			else if (treeItem is NetworkComputerTreeItem)
+			else if (treeItem is NetworkComputerTreeItem || treeItem is LocalComputerTreeItem)
 				return desktop;
 			else if (treeItem is NetworkTreeItem)
-				return network;			
+				return network;
 			else
 				return folder;
 

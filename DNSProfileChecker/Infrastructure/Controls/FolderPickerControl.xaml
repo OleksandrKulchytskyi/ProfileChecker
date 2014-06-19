@@ -21,11 +21,11 @@
 		<TreeView x:Name="TreeView" 
                   ItemsSource="{Binding ElementName=pickerControl,Path=Root.Childs}"
                   ItemContainerStyle="{Binding ElementName=pickerControl,Path=ItemContainerStyle}"
-                  TreeViewItem.Expanded="TreeView_Expanded" TreeViewItem.Selected="TreeView_Selected">
+                  TreeViewItem.Expanded="TreeView_Expanded" TreeViewItem.Selected="TreeView_Selected" Cursor="{Binding ElementName=pickerControl, Path=CursorState, Mode=TwoWay}">
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource ="{Binding Childs}">
 					<StackPanel Orientation="Horizontal" ContextMenu="{StaticResource TreeItemContextMenu}">
-						<Image Height="16" Width="16" Source="{Binding Converter={StaticResource DriveIconConverter}}"/>
+						<Image Height="17" Width="17" Source="{Binding Converter={StaticResource DriveIconConverter}}"/>
 						<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
 					</StackPanel>
 				</HierarchicalDataTemplate>

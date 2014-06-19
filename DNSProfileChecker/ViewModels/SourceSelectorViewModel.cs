@@ -157,13 +157,5 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				return (ProfileSource.IsNotNullOrEmpty() || (SelectedResult != null));
 			}
 		}
-
-		public void Browse()
-		{
-			var dialog = new System.Windows.Forms.FolderBrowserDialog();
-			System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
-				this.ProfileSource = dialog.SelectedPath;
-		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers
 	{
 		public static string NormalizePath(string path, bool includeShare = false)
 		{
-			Ensure.Argument.NotNullOrEmpty(path, "path cannot be a null or empty");
+			Ensure.Argument.NotNull(path, "path cannot be a null or empty");
 
 			if (path.StartsWith("Network") && path.Length > 7)
 			{
