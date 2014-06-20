@@ -29,6 +29,7 @@ namespace DNSProfileChecker.Workflow
 				try
 				{
 					Directory.CreateDirectory(draFolder.FullName);
+					DoLog(LogSeverity.Success, string.Format("Directory [drafiles] has been created in the root: {0}", folderPath), null);
 				}
 				catch (Exception ex)
 				{
@@ -87,20 +88,30 @@ namespace DNSProfileChecker.Workflow
 			bool missedBoth = (!acarchiveENWM.Exists && !acarchiveNWM.Exists);
 			if (missedBoth)
 			{
-				State = WorkflowStates.Failed;
-				Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
-				DoLog(LogSeverity.Warn, Description, null);
+				if (!new DirectoryInfo(folderPath).Name.Contains("container"))
+				{
+					State = WorkflowStates.Failed;
+					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
+					DoLog(LogSeverity.Warn, Description, null);
 
-				try
-				{
-					Directory.Delete(folderPath, true);
-					DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", folderPath), null);
+					try
+					{
+						Directory.Delete(folderPath, true);
+						DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", folderPath), null);
+					}
+					catch (Exception ex)
+					{
+						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", folderPath), ex);
+					}
+					return;
 				}
-				catch (Exception ex)
+				else
 				{
-					DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", folderPath), ex);
+					State = WorkflowStates.Warn;
+					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the container folder: {0}", folderPath);
+					DoLog(LogSeverity.Warn, Description, null);
+					return;
 				}
-				return;
 			}
 			else
 			{

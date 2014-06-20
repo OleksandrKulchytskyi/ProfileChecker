@@ -90,8 +90,7 @@ namespace DNSProfileChecker.Workflow
 						}
 						else
 							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contains folder named Drafiles.", sessionDi.FullName), null);
-
-					}
+					}//end of foreach statement
 				}
 				else
 				{
