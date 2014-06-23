@@ -90,7 +90,7 @@ namespace DNSProfileChecker.Workflow
 			{
 				if (!new DirectoryInfo(folderPath).Name.Contains("container"))
 				{
-					State = WorkflowStates.Failed;
+					State = WorkflowStates.Warn;
 					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
 					DoLog(LogSeverity.Warn, Description, null);
 

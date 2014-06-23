@@ -90,7 +90,25 @@ namespace DNSProfileChecker.Workflow
 						}
 						else
 							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contains folder named Drafiles.", sessionDi.FullName), null);
-					}//end of foreach statement
+					}//end of foreach statement for sessions
+
+					//according to the Scott's request after the trimming workflow, tool has to reoreder folders if needed.
+					DirectoryInfo[] sessionsDI = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
+					IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
+					if (!sessionsValidator.Validate(sessionsDI))
+					{
+						DoLog(LogSeverity.Warn, string.Format("Folder {0} has some missed session(s) folder: {1}",
+								containerDI.Name, string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name))), null);
+
+						IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
+						if (!reorderManager.Reorder(sessions))
+						{
+							DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
+							State = WorkflowStates.Warn;
+						}
+						else
+							DoLog(LogSeverity.Info, "Session re-ordering workflow has completed successfully.", null);
+					}
 				}
 				else
 				{
@@ -98,7 +116,6 @@ namespace DNSProfileChecker.Workflow
 					Description = string.Format("Folder [{0}] has a size {1} which is less than a set threshold {2}{3} Workflow: {4} won't be applied.", containerDI.Name, size, Constants.FolderLimitSize, Environment.NewLine, this.GetType().ToString());
 					DoLog(LogSeverity.Info, Description, null);
 				}
-
 			}
 			else if (IsImportant)
 			{

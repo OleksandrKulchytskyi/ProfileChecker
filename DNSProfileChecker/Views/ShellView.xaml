@@ -13,6 +13,12 @@
 		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True" Margin="0,4,0,0">
 			<ListView.Resources>
 				<conv:SeverityToImageConverter x:Key="imageConverter" />
+
+				<ControlTemplate x:Key="boldedEntry" TargetType="{x:Type Control}">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Path=Message}" FontWeight="Bold"/>
+					</StackPanel>
+				</ControlTemplate>
 			</ListView.Resources>
 			<ListView.View>
 				<GridView>
@@ -23,7 +29,26 @@
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Width="765" Header="Message" DisplayMemberBinding="{Binding Message}" />
+					<GridViewColumn Width="765" Header="Message">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<Control x:Name="control">
+									<Control.Template>
+										<ControlTemplate TargetType="{x:Type Control}">
+											<StackPanel Orientation="Horizontal">
+												<TextBlock Text="{Binding Path=Message}" />
+											</StackPanel>
+										</ControlTemplate>
+									</Control.Template>
+								</Control>
+								<DataTemplate.Triggers>
+									<DataTrigger Binding="{Binding Path=NeedBolding}" Value="True">
+										<Setter TargetName="control" Property="Template" Value="{StaticResource boldedEntry}" />
+									</DataTrigger>
+								</DataTemplate.Triggers>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
 				</GridView>
 			</ListView.View>
 		</ListView>

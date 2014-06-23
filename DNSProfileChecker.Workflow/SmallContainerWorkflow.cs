@@ -47,59 +47,37 @@ namespace DNSProfileChecker.Workflow
 					}
 				}
 
-				DirectoryInfo[] sessions = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
-				IValidator<DirectoryInfo[]> sessionValidator = new Common.Implementation.SessionFoldersSequenceValidator();
-				if (!sessionValidator.Validate(sessions))
+				DoLog(LogSeverity.Info, "Begin to verify each session folder.", null);
+				foreach (DirectoryInfo sessionDI in containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly))
 				{
-					DoLog(LogSeverity.Warn, string.Format("Folder {0} has some missed session(s) folder: {1}",
-							containerDI.Name, string.Join(",", sessionValidator.MissedValues.Select(x => x.Name))), null);
+					base.Execute(sessionDI.FullName);
+				}
+				State = WorkflowStates.Success;
+
+				DirectoryInfo[] sessions = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
+				IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
+				if (!sessionsValidator.Validate(sessions))
+				{
+					DoLog(LogSeverity.Warn, string.Format("Directory {0} has some missed session(s) folder(s): {1}",
+							containerDI.Name, string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name))), null);
 
 					IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
 					if (!reorderManager.Reorder(sessions))
 					{
-						DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during reordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
+						DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
 						State = WorkflowStates.Warn;
 					}
 					else
-						DoLog(LogSeverity.Info, "Session reordering workflow has completed successfully.", null);
-
-					DoLog(LogSeverity.Info, "Begin to verify each session folder.", null);
-					foreach (DirectoryInfo sessionDI in containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly))
-					{
-						base.Execute(sessionDI.FullName);
-					}
-					State = WorkflowStates.Success;
+						DoLog(LogSeverity.Info, "Session re-ordering workflow has completed successfully.", null);
 				}
 				else
-				{
-					DoLog(LogSeverity.Info, "Session folders are reside in the consistent way, no reordering is needed.", null);
-					DoLog(LogSeverity.Info, "Begin to verify each session folder.", null);
-
-					foreach (DirectoryInfo session in sessions)
-					{
-						base.Execute(session.FullName);
-					}
-					State = WorkflowStates.Success;
-				}
+					DoLog(LogSeverity.Info, "Session folders are reside in the consistent way, no re-ordering is needed.", null);
 			}
 			else
 			{
 				State = WorkflowStates.Failed;
 				Description = string.Format("Folder doesn't exist. {0}Folder path: {1}", Environment.NewLine, folderPath);
 			}
-		}
-
-		private string GetMessage(AggregateException ex)
-		{
-			if (ex == null)
-				return string.Empty;
-
-			StringBuilder sb = new StringBuilder();
-			foreach (Exception e in ex.InnerExceptions)
-			{
-				sb.AppendLine(e.Message);
-			}
-			return sb.ToString();
 		}
 	}
 }

@@ -76,5 +76,18 @@ namespace DNSProfileChecker.Workflow
 				}
 			}
 		}
+
+		protected string GetMessage(AggregateException ex)
+		{
+			if (ex == null)
+				return string.Empty;
+
+			StringBuilder sb = new StringBuilder();
+			foreach (Exception e in ex.InnerExceptions)
+			{
+				sb.AppendLine(e.Message);
+			}
+			return sb.ToString();
+		}
 	}
 }

@@ -21,17 +21,21 @@ namespace DNSProfileChecker.Workflow
 			string filePath = Path.Combine(sourceFolder, "current\\acoustic.ini");
 
 			bool isExists = File.Exists(filePath);
-			if (!isExists && IsImportant)
+			if (!isExists)
 			{
-				State = WorkflowStates.Failed;
-				Description = "File acoustic.ini doesn't exist.";
+				if (IsImportant)
+				{
+					State = WorkflowStates.Failed;
+					Description = "File acoustic.ini doesn't exist.";
+				}
+				else if (!IsImportant)
+				{
+					State = WorkflowStates.Warn;
+					Description = "File acoustic.ini doesn't exist.";
+				}
+				DoLog(LogSeverity.Error, Description, null);
 			}
-			else if (!isExists && IsImportant)
-			{
-				State = WorkflowStates.Warn;
-				Description = "File acoustic.ini doesn't exist.";
-			}
-			else if (isExists)
+			else
 			{
 				State = WorkflowStates.Processing;
 				Dictionary<string, List<KeyValuePair<string, string>>> data = IniFileParser.GetSingleSection(filePath, "Acoustics");
@@ -39,6 +43,7 @@ namespace DNSProfileChecker.Workflow
 				{
 					State = WorkflowStates.Failed;
 					Description = "Unable to find [Acoustics] section in the acoustic.ini file.";
+					DoLog(LogSeverity.Error, Description, null);
 					return;
 				}
 
@@ -59,8 +64,9 @@ namespace DNSProfileChecker.Workflow
 					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, container));
 					if (!di.Exists)
 					{
-						msgBuilder.AppendLine(string.Format("Acoustic container folder {0} has been created.", container));
+						DoLog(LogSeverity.Warn, string.Format("Container folder has been missed in the root {0}", currentFolder), null);
 						di.Create();
+						msgBuilder.AppendLine(string.Format("Acoustic container folder {0} has been created.", container));
 					}
 					else
 					{
@@ -82,7 +88,6 @@ namespace DNSProfileChecker.Workflow
 				}
 				else
 					State = WorkflowStates.Success;
-
 			}
 		}
 	}
