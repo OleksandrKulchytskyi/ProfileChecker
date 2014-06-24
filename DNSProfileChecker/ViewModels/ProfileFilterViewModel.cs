@@ -11,7 +11,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
 	public sealed class ProfileFilterViewModel : BaseViewModel
 	{
-		private readonly WorkflowState _state;
+		private WorkflowState _state;
 		private readonly ILogger _logger;
 
 		public ProfileFilterViewModel(WorkflowState state)

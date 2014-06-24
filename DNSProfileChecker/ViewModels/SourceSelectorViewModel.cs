@@ -11,7 +11,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 {
 	public sealed class SourceSelectorViewModel : BaseViewModel
 	{
-		private readonly WorkflowState _state;
+		private WorkflowState _state;
 		private readonly ILogger _aggregator;
 
 		public SourceSelectorViewModel(WorkflowState state)
@@ -140,12 +140,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			this.NextTransition = Models.StateTransition.SourceSelectorFinished;
 			_state.SourcePath = ProfileSource;
 			_state.ClearState();
-
-			if (SelectedResult != null)
-			{
-				if (ProfileSource != SelectedResult.Path)
-					_state.SourcePath = SelectedResult.Path;
-			}
 
 			this.TryClose();
 		}
