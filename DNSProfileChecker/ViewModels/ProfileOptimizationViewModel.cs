@@ -173,7 +173,8 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 					{
 						if (workflow.State == WorkflowStates.Failed || workflow.State == WorkflowStates.Exceptional || workflow.State == WorkflowStates.Warn)
 						{
-							_logger.LogData(LogSeverity.Error, workflow.Description, null);
+							if (workflow.State != WorkflowStates.Warn)
+								_logger.LogData(LogSeverity.Error, workflow.Description, null);
 							isProfileCorrect = false;
 							continue;
 						}

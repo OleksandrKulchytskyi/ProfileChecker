@@ -19,6 +19,7 @@ namespace DNSProfileChecker.Workflow
 			IFileFactory fact = new Common.Factories.FileFactory();
 
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
+			bool handlingContainerFolder = draFolder.Parent.Name.IndexOf("_container", StringComparison.OrdinalIgnoreCase) != -1;
 			if (!draFolder.Exists)
 			{
 				State = WorkflowStates.Warn;
@@ -57,7 +58,11 @@ namespace DNSProfileChecker.Workflow
 					State = WorkflowStates.Failed;
 					DoLog(LogSeverity.Error, "Unable to create drafiles.ini file.", ex);
 				}
-				finally { if (sw != null) sw.Dispose(); }
+				finally
+				{
+					if (sw != null)
+						sw.Dispose();
+				}
 			}
 
 			//check for existance of acarchive.ini
@@ -79,7 +84,11 @@ namespace DNSProfileChecker.Workflow
 					State = WorkflowStates.Failed;
 					DoLog(LogSeverity.Error, string.Format("Unable to create acarchive.ini file in the directory {0}.", folderPath), ex);
 				}
-				finally { if (sw != null) sw.Dispose(); }
+				finally
+				{
+					if (sw != null)
+						sw.Dispose();
+				}
 			}
 
 			//check for existance of files with extensions: nwv and enwv 
@@ -88,27 +97,27 @@ namespace DNSProfileChecker.Workflow
 			bool missedBoth = (!acarchiveENWM.Exists && !acarchiveNWM.Exists);
 			if (missedBoth)
 			{
-				if (!new DirectoryInfo(folderPath).Name.Contains("container"))
+				if (!handlingContainerFolder)
 				{
 					State = WorkflowStates.Warn;
-					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", folderPath);
+					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the session folder: {0}", draFolder.Parent.Name);
 					DoLog(LogSeverity.Warn, Description, null);
 
 					try
 					{
 						Directory.Delete(folderPath, true);
-						DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", folderPath), null);
+						DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", draFolder.Parent.Name), null);
 					}
 					catch (Exception ex)
 					{
-						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", folderPath), ex);
+						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", draFolder.Parent.Name), ex);
 					}
 					return;
 				}
 				else
-				{
+				{//case when we are handling the container folder
 					State = WorkflowStates.Warn;
-					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the container folder: {0}", folderPath);
+					Description = string.Format("Both files acarchive.nwv and acarchive.enwv aren't exist in the container folder: {0}", draFolder.Parent.Name);
 					DoLog(LogSeverity.Warn, Description, null);
 					return;
 				}
@@ -117,11 +126,15 @@ namespace DNSProfileChecker.Workflow
 			{
 				State = WorkflowStates.Success;
 				if (!acarchiveNWM.Exists)
-					Description = string.Format("File acarchive.nwv doesn't exist in the session folder: {0}", folderPath);
+				{
+					Description = string.Format("File acarchive.nwv doesn't exist in the session folder: {0}", draFolder.Parent.Name);
+					DoLog(LogSeverity.Warn, Description, null);
+				}
 				if (!acarchiveENWM.Exists)
-					Description = string.Format("File acarchive.enwv doesn't exist in the session folder: {0}", folderPath);
-
-				DoLog(LogSeverity.Warn, Description, null);
+				{
+					Description = string.Format("File acarchive.enwv doesn't exist in the session folder: {0}", draFolder.Parent.Name);
+					DoLog(LogSeverity.Warn, Description, null);
+				}
 			}
 
 			if (isWarned)
@@ -129,7 +142,10 @@ namespace DNSProfileChecker.Workflow
 			else
 			{
 				State = WorkflowStates.Success;
-				DoLog(LogSeverity.Info, string.Format("Session folder [{0}] is correct.", folderPath), null);
+				if (handlingContainerFolder)
+					DoLog(LogSeverity.Info, string.Format("Container folder [{0}] is correct.", draFolder.Parent.Name), null);
+				else
+					DoLog(LogSeverity.Info, string.Format("Session folder [{0}] is correct.", draFolder.Parent.Name), null);
 			}
 		}
 	}

@@ -37,8 +37,18 @@ namespace DNSProfileChecker.Workflow
 			}
 			else
 			{
-				State = WorkflowStates.Processing;
-				Dictionary<string, List<KeyValuePair<string, string>>> data = IniFileParser.GetSingleSection(filePath, "Acoustics");
+				Dictionary<string, List<KeyValuePair<string, string>>> data = null;
+				try
+				{
+					data = IniFileParser.GetSingleSection(filePath, "Acoustics");
+				}
+				catch (System.Exception ex)
+				{
+					DoLog(LogSeverity.Error, (Description = "Error occured during the reading of acoustic.ini file."), ex);
+					State = WorkflowStates.Exceptional;
+					return;
+				}
+
 				if (data.Count == 0)
 				{
 					State = WorkflowStates.Failed;
@@ -60,18 +70,17 @@ namespace DNSProfileChecker.Workflow
 						break;
 					}
 
-					string container = item.Value + "_container";
-					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, container));
+					string containerFolderName = item.Value + "_container";
+					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, containerFolderName));
 					if (!di.Exists)
 					{
 						DoLog(LogSeverity.Warn, string.Format("Container folder has been missed in the root {0}", currentFolder), null);
+						
 						di.Create();
-						msgBuilder.AppendLine(string.Format("Acoustic container folder {0} has been created.", container));
+						msgBuilder.AppendLine(string.Format("Acoustic container folder {0} has been created.", containerFolderName));
 					}
 					else
-					{
 						base.Execute(diContainer.FullName);
-					}
 				}
 				if (isMainMissed)
 				{
