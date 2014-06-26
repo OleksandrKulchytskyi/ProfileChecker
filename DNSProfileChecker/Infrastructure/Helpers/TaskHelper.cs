@@ -28,12 +28,12 @@ namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers
 				((Timer)self).Dispose();
 				try
 				{
-					
 					taskCompletionSource.SetResult(true);
 				}
 				catch (Exception exception)
 				{
-					taskCompletionSource.SetException(exception);
+					if (taskCompletionSource.Task.Status != TaskStatus.RanToCompletion)
+						taskCompletionSource.SetException(exception);
 				}
 			});
 			timer.Change(millisecondsDelay, millisecondsDelay);

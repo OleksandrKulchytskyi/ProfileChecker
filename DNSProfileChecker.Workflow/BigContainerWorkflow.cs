@@ -95,7 +95,7 @@ namespace DNSProfileChecker.Workflow
 					//according to the Scott's request after the trimming workflow, tool has to reoreder folders if needed.
 					DirectoryInfo[] sessionsDI = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
 					IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
-					if (!sessionsValidator.Validate(sessionsDI))
+					if (sessionsDI.Length > 0 && !sessionsValidator.Validate(sessionsDI))
 					{
 						DoLog(LogSeverity.Warn, string.Format("Folder {0} has some missed session(s) folder: {1}",
 								containerDI.Name, string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name))), null);

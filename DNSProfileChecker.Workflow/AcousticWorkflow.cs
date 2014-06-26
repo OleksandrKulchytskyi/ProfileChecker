@@ -52,8 +52,15 @@ namespace DNSProfileChecker.Workflow
 				if (data.Count == 0)
 				{
 					State = WorkflowStates.Failed;
-					Description = "Unable to find [Acoustics] section in the acoustic.ini file.";
-					DoLog(LogSeverity.Error, Description, null);
+					Description = "File acoustic.ini doesn't have section called [Acoustics].";
+					//DoLog(LogSeverity.Error, Description, null);
+					return;
+				}
+				else if (data["Acoustics"].Count==0)
+				{
+					State = WorkflowStates.Failed;
+					Description = "[Acoustics] section has no entires in the acoustic.ini file.";
+					//DoLog(LogSeverity.Error, Description, null);
 					return;
 				}
 
@@ -65,19 +72,21 @@ namespace DNSProfileChecker.Workflow
 					DirectoryInfo di = new DirectoryInfo(Path.Combine(currentFolder, item.Value));
 					if (!di.Exists)
 					{
-						msgBuilder.AppendLine(string.Format("Acoustic folder {0} is missed.", item.Value));
+						string msg = string.Format("Acoustic dictation source folder {0} is missed.", item.Value);
+						DoLog(LogSeverity.Error, msg, null);
+						msgBuilder.AppendLine(msg);
 						isMainMissed = true;
-						break;
+						continue;
 					}
 
-					string containerFolderName = item.Value + "_container";
-					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, containerFolderName));
+					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, item.Value + "_container"));
 					if (!di.Exists)
 					{
-						DoLog(LogSeverity.Warn, string.Format("Container folder has been missed in the root {0}", currentFolder), null);
-						
+						DoLog(LogSeverity.Warn, string.Format("Acoustic container folder has been missed in the root {0}", currentFolder), null);
 						di.Create();
-						msgBuilder.AppendLine(string.Format("Acoustic container folder {0} has been created.", containerFolderName));
+						string addMsg = string.Format("Acoustic container folder {0} has been created.", diContainer.Name);
+						msgBuilder.AppendLine(addMsg);
+						DoLog(LogSeverity.Success, addMsg, null);
 					}
 					else
 						base.Execute(diContainer.FullName);

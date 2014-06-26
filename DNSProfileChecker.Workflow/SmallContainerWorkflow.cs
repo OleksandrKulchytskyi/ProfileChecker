@@ -16,7 +16,7 @@ namespace DNSProfileChecker.Workflow
 		public override void Execute(object parameter)
 		{
 			Ensure.Argument.NotNull(parameter, "parameter value cannot be a null.");
-
+			State = WorkflowStates.Success;
 			string folderPath = parameter as string;
 
 			DirectoryInfo containerDI = new DirectoryInfo(folderPath);
@@ -52,15 +52,15 @@ namespace DNSProfileChecker.Workflow
 				{
 					base.Execute(sessionDI.FullName);
 				}
-				State = WorkflowStates.Success;
 
 				DirectoryInfo[] sessions = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
 				IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
 				if (!sessionsValidator.Validate(sessions))
 				{
-					DoLog(LogSeverity.Warn, string.Format("Directory {0} has some missed session(s) folder(s): {1}",
-							containerDI.Name, string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name))), null);
+					string missedProfiles = string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name));
+					DoLog(LogSeverity.Warn, string.Format("Directory [{0}] has some missed session(s) entries: {1}", containerDI.Name, missedProfiles), null);
 
+					DoLog(LogSeverity.UI, "Begin to perform session(s) reordering workflow", null);
 					IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
 					if (!reorderManager.Reorder(sessions))
 					{
