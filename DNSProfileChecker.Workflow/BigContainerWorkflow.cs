@@ -104,7 +104,7 @@ namespace DNSProfileChecker.Workflow
 						if (!reorderManager.Reorder(sessions))
 						{
 							DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
-							State = WorkflowStates.Warn;
+							State = WorkflowStates.Failed;
 						}
 						else
 							DoLog(LogSeverity.Info, "Session re-ordering workflow has completed successfully.", null);

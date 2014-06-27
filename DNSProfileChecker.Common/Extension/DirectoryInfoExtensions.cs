@@ -32,5 +32,10 @@ namespace DNSProfileChecker.Common
 			foreach (string newPath in Directory.GetFiles(source.FullName, "*.*", SearchOption.AllDirectories))
 				File.Copy(newPath, newPath.Replace(source.FullName, destination.FullName), true);
 		}
+
+		public static void Move(this DirectoryInfo destination, DirectoryInfo source)
+		{
+			Directory.Move(source.FullName, destination.FullName);
+		}
 	}
 }

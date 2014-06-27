@@ -7,7 +7,7 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
-			<RowDefinition Height="0.9*" />
+			<RowDefinition Height="0.89*" />
 		</Grid.RowDefinitions>
 		<ContentControl Name="ActiveItem" VerticalAlignment="Stretch" Height="362" Grid.Row="0" />
 		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True" Margin="0,4,0,0">
