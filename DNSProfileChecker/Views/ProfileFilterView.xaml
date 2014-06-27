@@ -13,7 +13,6 @@
 				<RowDefinition />
 				<RowDefinition Height="0.08*" />
 			</Grid.RowDefinitions>
-
 			<Grid>
 				<Grid.Resources>
 					<BitmapImage x:Key="folderImg" UriSource="/Nuance.Radiology.DNSProfileChecker;component/Images/folder.ico" />
@@ -29,7 +28,6 @@
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Avaliable profiles:" />
 				<TextBlock Text="Profiles to be checked:" Grid.Column="2" />
-
 
 				<ListBox Grid.Row="1" ItemsSource="{Binding AvaliableProfiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
 							  VirtualizingStackPanel.IsVirtualizing="True" IsSynchronizedWithCurrentItem="True" Margin="0,0,0,4"

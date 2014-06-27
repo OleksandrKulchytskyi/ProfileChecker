@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:conv="clr-namespace:Nuance.Radiology.DNSProfileChecker.Converters"
 		xmlns:behaviours="clr-namespace:Nuance.Radiology.DNSProfileChecker.Infrastructure.Behaviours"
-        Title="DNS Profile Checker" Height="710" Width="850" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="DNS Profile Checker" Height="710" Width="850" ResizeMode="CanMinimize">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
@@ -13,7 +13,6 @@
 		<ListView Grid.Row="1" x:Name="Logs" behaviours:ListViewScrollBehavior.ScrollOnNewItem="True" Margin="0,4,0,0">
 			<ListView.Resources>
 				<conv:SeverityToImageConverter x:Key="imageConverter" />
-
 				<ControlTemplate x:Key="boldedEntry" TargetType="{x:Type Control}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="{Binding Path=Message}" FontWeight="Bold"/>

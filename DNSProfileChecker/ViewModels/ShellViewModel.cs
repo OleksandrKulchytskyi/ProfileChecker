@@ -22,6 +22,18 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			base.DisplayName = "DNS Profiles Checker";
 		}
 
+		private ObservableCollection<Infrastructure.Messages.LogEntry> _logs;
+
+		public ObservableCollection<Infrastructure.Messages.LogEntry> Logs
+		{
+			get { return _logs; }
+			set
+			{
+				_logs = value;
+				base.NotifyOfPropertyChange(() => Logs);
+			}
+		}
+
 		private void activateFirstScreen()
 		{
 			var screen = new SourceSelectorViewModel(new WorkflowState());
@@ -56,18 +68,6 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			if (message != null)
 			{
 				_logs.Add(message);
-			}
-		}
-
-		private ObservableCollection<Infrastructure.Messages.LogEntry> _logs;
-
-		public ObservableCollection<Infrastructure.Messages.LogEntry> Logs
-		{
-			get { return _logs; }
-			set
-			{
-				_logs = value;
-				base.NotifyOfPropertyChange(() => Logs);
 			}
 		}
 	}
