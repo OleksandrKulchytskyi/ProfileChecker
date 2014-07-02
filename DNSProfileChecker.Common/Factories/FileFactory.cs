@@ -13,10 +13,10 @@ namespace DNSProfileChecker.Common.Factories
 			switch (type)
 			{
 				case FileFactoryEnum.DRAFilesINI:
-					sw.WriteLine("[Files]");
-					sw.WriteLine(Environment.NewLine); // guided by the Scott's request, inserting line-brake between sections 
 					sw.WriteLine("[Count]");
 					sw.WriteLine("SeqNo=0");
+					sw.WriteLine(Environment.NewLine); // guided by the Scott's request, inserting line-brake between the section declarations
+					sw.WriteLine("[Files]");
 					break;
 
 				case FileFactoryEnum.AcarchiveINI:

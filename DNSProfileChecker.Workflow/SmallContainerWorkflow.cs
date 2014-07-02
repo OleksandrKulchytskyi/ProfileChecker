@@ -68,10 +68,10 @@ namespace DNSProfileChecker.Workflow
 						State = WorkflowStates.Failed;
 					}
 					else
-						DoLog(LogSeverity.Info, "Session re-ordering workflow has completed successfully.", null);
+						DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 				}
 				else
-					DoLog(LogSeverity.Info, "Session folders are reside in the consistent way, no re-ordering is needed.", null);
+					DoLog(LogSeverity.UI, "Session folders are reside in the consistent way, no re-ordering is needed.", null);
 			}
 			else
 			{

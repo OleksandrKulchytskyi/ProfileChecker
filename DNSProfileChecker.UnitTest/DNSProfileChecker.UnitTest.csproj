@@ -79,6 +79,7 @@
     <Compile Include="IniParserUnitTest.cs" />
     <Compile Include="LogAggregatorUnitTest.cs" />
     <Compile Include="ProfilesSourceProviderUnitTest.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="WorkflowsUnitTests.cs" />
     <Compile Include="WorkflowProviderUnitTest.cs" />
   </ItemGroup>
