@@ -58,7 +58,8 @@ namespace DNSProfileChecker.Workflow
 				if (!sessionsValidator.Validate(sessions))
 				{
 					string missedProfiles = string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name));
-					DoLog(LogSeverity.Warn, string.Format("Directory [{0}] has some missed session(s) entries: {1}", containerDI.Name, missedProfiles), null);
+					DoLog(LogSeverity.Warn, string.Format("Dictation source ({0}) has some missed session folder(s): {1}",
+							containerDI.Name, missedProfiles), null);
 
 					DoLog(LogSeverity.UI, "Begin to perform session(s) reordering workflow", null);
 					IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
@@ -71,7 +72,7 @@ namespace DNSProfileChecker.Workflow
 						DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 				}
 				else
-					DoLog(LogSeverity.UI, "Session folders are reside in the consistent way, no re-ordering is needed.", null);
+					DoLog(LogSeverity.UI, "Session folder order is correct, no renumbering is necessary.", null);
 			}
 			else
 			{

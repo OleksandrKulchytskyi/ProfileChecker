@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Configuration\LoggerProviderSection.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ConversionHelper.cs" />
     <Compile Include="Extension\DirectoryInfoExtensions.cs" />
     <Compile Include="Extension\Ensure.cs" />
     <Compile Include="Extension\StringExtension.cs" />

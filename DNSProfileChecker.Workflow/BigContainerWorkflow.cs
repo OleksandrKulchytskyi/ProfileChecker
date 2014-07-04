@@ -27,7 +27,7 @@ namespace DNSProfileChecker.Workflow
 				long size = containerDI.GetFolderSize();
 				if (size > Constants.FolderLimitSize)
 				{
-					DoLog(LogSeverity.UI, "Dictation source is to large, trimming is nedded.", null);
+					DoLog(LogSeverity.UI, string.Format("Dictation source ({0}) is too large, trimming is necessary.", containerDI.Name), null);
 					DirectoryInfo[] sessions = orderedExp.ToArray();
 					foreach (DirectoryInfo sessionDi in sessions)
 					{
@@ -101,7 +101,8 @@ namespace DNSProfileChecker.Workflow
 
 						if ((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold)
 						{
-							DoLog(LogSeverity.UI, string.Format("Trimming is ended at size {0}.", size), null);
+							string trimCompleted = "Trimming is complete.  New size of dictation source ({0}) is {1} Mb";
+							DoLog(LogSeverity.UI, string.Format(trimCompleted, containerDI.Name, size.ConvertToMegabytes()), null);
 							break; // end pruning session directories.
 						}
 
@@ -112,9 +113,11 @@ namespace DNSProfileChecker.Workflow
 					IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
 					if (sessionsDI.Length > 0 && !sessionsValidator.Validate(sessionsDI))
 					{
-						DoLog(LogSeverity.UI, string.Format("Folder {0} has some missed session(s) folder: {1}",
-								containerDI.Name, string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name))), null);
+						string missedProfiles = string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name));
+						DoLog(LogSeverity.Warn, string.Format("Dictation source ({0}) has some missed session folder(s): {1}",
+								containerDI.Name, missedProfiles), null);
 
+						DoLog(LogSeverity.UI, "Begin to perform session(s) reordering workflow", null);
 						IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
 						if (!reorderManager.Reorder(sessions))
 						{
@@ -125,7 +128,7 @@ namespace DNSProfileChecker.Workflow
 							DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 					}
 					else
-						DoLog(LogSeverity.UI, "Session folders are reside in the consistent way, no re-ordering is needed.", null);
+						DoLog(LogSeverity.UI, "Session folder order is correct, no renumbering is necessary.", null);
 				}
 				else
 				{
