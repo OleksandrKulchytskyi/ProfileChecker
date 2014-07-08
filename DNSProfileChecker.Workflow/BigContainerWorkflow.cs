@@ -27,6 +27,7 @@ namespace DNSProfileChecker.Workflow
 				long size = containerDI.GetFolderSize();
 				if (size > Constants.FolderLimitSize)
 				{
+					bool approachTaken = false;
 					DoLog(LogSeverity.UI, string.Format("Dictation source ({0}) is too large, trimming is necessary.", containerDI.Name), null);
 					DirectoryInfo[] sessions = orderedExp.ToArray();
 					foreach (DirectoryInfo sessionDi in sessions)
@@ -35,10 +36,10 @@ namespace DNSProfileChecker.Workflow
 							continue;
 
 						//DirectoryInfo draFolder = sessionDi.GetDirectories().FirstOrDefault(f => f.Name.Equals("drafiles", StringComparison.OrdinalIgnoreCase));
+						approachTaken = false;
 						DirectoryInfo draFolder = sessionDi.GetDirectories("drafile*", SearchOption.TopDirectoryOnly).FirstOrDefault();
 						if (draFolder != null && draFolder.Exists)
 						{
-							bool approachTaken = false;
 							DoLog(LogSeverity.Info, string.Format("Deleting content of drafiles folder in {0} ", sessionDi.FullName), null);
 							foreach (FileInfo fi in draFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly))
 							{
@@ -69,37 +70,31 @@ namespace DNSProfileChecker.Workflow
 								}
 							}
 
-							#region commented
-							//Dictionary<string, List<string>> data = IniFileParser.GetSectionsDictionary(draINI.FullName);
-							//if (data.ContainsKey("Count"))
-							//	data.Remove("Count");
-							//if (data.ContainsKey("Files"))
-							//	data.Remove("Files");
+							FileInfo acarINI = new FileInfo(Path.Combine(sessionDi.FullName, "acarchive.ini"));
+							if (approachTaken)
+							{
+								try
+								{
+									if (acarINI.Exists)
+										acarINI.Delete();
 
-							//data["Count"] = new List<string>() { "SeqNo=0" };
-							//data["Files"] = new List<string>();
-
-
-							//using (StreamWriter sw = draINI.CreateText())
-							//{
-							//	foreach (var key in data.Keys)
-							//	{
-							//		sw.WriteLine(string.Format("[{0}]", key));
-							//		foreach (string item in data[key])
-							//		{
-							//			sw.WriteLine(item);
-							//		}
-							//		sw.WriteLine(Environment.NewLine);// guided by the Scott's request, inserting line-brake between sections 
-							//	}
-							//	sw.Flush();
-							//} 
-							#endregion
+									IFileFactory factory = new Common.Factories.FileFactory();
+									StreamWriter sw = factory.CreateFile(acarINI.FullName, FileFactoryEnum.AcarchiveINI);
+									sw.Flush();
+									sw.Dispose();
+									DoLog(LogSeverity.Success, "acarchive.ini has been successfully re-created.", null);
+								}
+								catch (Exception ex)
+								{
+									DoLog(LogSeverity.Error, "Unable to create acarchive.ini file.", ex);
+								}
+							}
 						}
 						// drafiles directory doesn't exist
 						else
 							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contains folder named Drafiles.", sessionDi.FullName), null);
 
-						if ((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold)
+						if (approachTaken && ((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold))
 						{
 							string trimCompleted = "Trimming is complete.  New size of dictation source ({0}) is {1} Mb";
 							DoLog(LogSeverity.UI, string.Format(trimCompleted, containerDI.Name, size.ConvertToMegabytes()), null);
