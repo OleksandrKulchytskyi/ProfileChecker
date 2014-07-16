@@ -30,11 +30,13 @@ namespace DNSProfileChecker.Workflow
 					bool approachTaken = false;
 					DoLog(LogSeverity.UI, string.Format("Dictation source ({0}) is too large, trimming is necessary.", containerDI.Name), null);
 					DirectoryInfo[] sessions = orderedExp.ToArray();
+
+					int interruptedIndex = -1;//index at which pruning workflow has been completed due to the min size limit.
+					DirectoryInfo[] notProcessed = null;
+
 					foreach (DirectoryInfo sessionDi in sessions)
 					{
-						if (!sessionDi.Exists)
-							continue;
-
+						if (!sessionDi.Exists) continue;
 						//DirectoryInfo draFolder = sessionDi.GetDirectories().FirstOrDefault(f => f.Name.Equals("drafiles", StringComparison.OrdinalIgnoreCase));
 						approachTaken = false;
 						DirectoryInfo draFolder = sessionDi.GetDirectories("drafile*", SearchOption.TopDirectoryOnly).FirstOrDefault();
@@ -45,13 +47,13 @@ namespace DNSProfileChecker.Workflow
 							{
 								approachTaken = true;
 								AggregateException exc;
-								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 3, out  exc);
+								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
 								if (exc != null)
 									DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
 							}
 
 							FileInfo draINI = new FileInfo(Path.Combine(sessionDi.FullName, "drafiles.ini"));
-							if (approachTaken)
+							if (!draINI.Exists || approachTaken)
 							{
 								try
 								{
@@ -71,7 +73,7 @@ namespace DNSProfileChecker.Workflow
 							}
 
 							FileInfo acarINI = new FileInfo(Path.Combine(sessionDi.FullName, "acarchive.ini"));
-							if (approachTaken)
+							if (!acarINI.Exists || approachTaken)
 							{
 								try
 								{
@@ -92,16 +94,32 @@ namespace DNSProfileChecker.Workflow
 						}
 						// drafiles directory doesn't exist
 						else
-							DoLog(LogSeverity.Warn, string.Format("Folder: {0} doesn't contains folder named Drafiles.", sessionDi.FullName), null);
+							DoLog(LogSeverity.Warn, string.Format("Folder: [{0}] doesn't contains folder named Drafiles.", sessionDi.FullName), null);
 
 						if (approachTaken && ((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold))
 						{
+							interruptedIndex = Array.IndexOf<DirectoryInfo>(sessions, sessionDi);
+							if (++interruptedIndex < sessions.Length)
+							{
+								notProcessed = new DirectoryInfo[sessions.Length - interruptedIndex];
+								Array.Copy(sessions, interruptedIndex, notProcessed, 0, notProcessed.Length);
+							}
 							string trimCompleted = "Trimming is complete.  New size of dictation source ({0}) is {1} Mb";
 							DoLog(LogSeverity.UI, string.Format(trimCompleted, containerDI.Name, size.ConvertToMegabytes()), null);
 							break; // end pruning session directories.
 						}
 
 					}//end of foreach statement for sessions
+
+					if (interruptedIndex > -1 && notProcessed != null)
+					{
+						IProfileWorkflow wf = new DNSProfileChecker.Workflow.SessionVerifierWorkflow();
+						foreach (DirectoryInfo session in notProcessed)
+						{
+							wf.Logger = this.Logger;
+							wf.Execute(session.FullName);
+						}
+					}
 
 					//according to the Scott's request after the trimming workflow, tool has to reoreder folders if needed.
 					DirectoryInfo[] sessionsDI = orderedExp.ToArray();

@@ -14,8 +14,8 @@ namespace DNSProfileChecker.Common.Factories
 			{
 				case FileFactoryEnum.DRAFilesINI:
 					sw.WriteLine("[Count]");
-					sw.WriteLine("SeqNo=0");
-					sw.WriteLine(Environment.NewLine); // guided by the Scott's request, inserting line-brake between the section declarations
+                    sw.WriteLine("SeqNo=0" + Environment.NewLine);  // Giving 'NewLine' it's own WriteLine caused an extra linefeed 
+					//sw.WriteLine(Environment.NewLine); // guided by the Scott's request, inserting line-brake between the section declarations
 					sw.WriteLine("[Files]");
 					break;
 
@@ -23,7 +23,7 @@ namespace DNSProfileChecker.Common.Factories
 					sw.WriteLine("[AO Archive]");
 					sw.WriteLine("AO Archive Size Millisecs=0");
 					sw.WriteLine("AO Enc Archive Size Millisecs=0");
-					sw.WriteLine("AO Archive Processed=1");
+					sw.WriteLine("AO Archive Processed=0");  // According to DNS team, should be zero to force reprocessing
 					break;
 
 				default:

@@ -12,6 +12,26 @@ namespace DNSProfileChecker.UnitTest
 		[TestMethod]
 		public void CompareDirectoryRetrievals()
 		{
+			if (true || false)
+			{
+				
+			}
+
+			if(false || true)
+			{
+				
+			}
+
+			if (true || true)
+			{
+				
+			}
+
+			if (false || false)
+			{
+				
+			}
+
 			Stopwatch sw = new Stopwatch();
 			DirectoryInfo di = new DirectoryInfo(@"\\DEV804\DragonUsers\ahnj\current\18_0_container");
 			sw.Start();
