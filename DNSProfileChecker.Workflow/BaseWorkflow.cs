@@ -13,6 +13,8 @@ namespace DNSProfileChecker.Workflow
 			Description = string.Empty;
 		}
 
+		public bool IsSimulationMode { get; set; }
+
 		public ILogger Logger { get; set; }
 
 		public string Description { get; set; }

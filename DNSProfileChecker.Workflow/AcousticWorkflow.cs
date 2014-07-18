@@ -56,7 +56,7 @@ namespace DNSProfileChecker.Workflow
 					//DoLog(LogSeverity.Error, Description, null);
 					return;
 				}
-				else if (data["Acoustics"].Count==0)
+				else if (data["Acoustics"].Count == 0)
 				{
 					State = WorkflowStates.Failed;
 					Description = "[Acoustics] section has no entires in the acoustic.ini file.";
@@ -83,7 +83,8 @@ namespace DNSProfileChecker.Workflow
 					if (!di.Exists)
 					{
 						DoLog(LogSeverity.Warn, string.Format("Acoustic container folder has been missed in the root {0}", currentFolder), null);
-						di.Create();
+						if (!IsSimulationMode)
+							di.Create();
 						string addMsg = string.Format("Acoustic container folder {0} has been created.", diContainer.Name);
 						msgBuilder.AppendLine(addMsg);
 						DoLog(LogSeverity.Success, addMsg, null);
@@ -106,7 +107,7 @@ namespace DNSProfileChecker.Workflow
 				}
 				else
 					State = WorkflowStates.Success;
-			}
+			}//end else region
 		}
 	}
 }

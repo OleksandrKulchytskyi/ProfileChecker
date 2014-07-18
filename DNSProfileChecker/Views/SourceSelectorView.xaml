@@ -15,9 +15,8 @@
 				<RowDefinition />
 				<RowDefinition Height="0.09*" />
 			</Grid.RowDefinitions>
-			<Button x:Name="GoNext" Grid.Row="1" Width="60" Margin="0,0,0,0" Content="Next"/>
-			<TextBlock HorizontalAlignment="Left" Margin="12,7,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
-			<ComboBox HorizontalAlignment="Left" Height="23" Margin="10,29,0,0" VerticalAlignment="Top" Width="515" IsEditable="True" TextSearch.TextPath="Path"
+			<TextBlock HorizontalAlignment="Left" Margin="12,3,0,0" TextWrapping="Wrap" Text="Please specify the DNS profiles source container folder:" VerticalAlignment="Top" />
+			<ComboBox HorizontalAlignment="Left" Height="23" Margin="10,22,0,0" VerticalAlignment="Top" Width="515" IsEditable="True" TextSearch.TextPath="Path"
 				ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedResult}" Text="{Binding ProfileSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
@@ -25,7 +24,13 @@
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>
-			<Controls:FolderPickerControl HorizontalAlignment="Left" Height="220" Margin="10,62,0,0" VerticalAlignment="Top" Width="515" SelectedFolder="{Binding Path=SelectedFolder, Mode=TwoWay}"/>
+
+			<CheckBox Content="Simulation mode" HorizontalAlignment="Left" Margin="11,51,0,0" VerticalAlignment="Top" Width="123"
+					  IsChecked="{Binding Mode=TwoWay, Path=IsSimulation}"/>
+
+			<Controls:FolderPickerControl HorizontalAlignment="Left" Height="220" Margin="10,73,0,0" VerticalAlignment="Top" Width="515" SelectedFolder="{Binding Path=SelectedFolder, Mode=TwoWay}"/>
+
+			<Button x:Name="GoNext" Grid.Row="1" Width="60" Margin="0,0,0,0" Content="Next"/>
 		</Grid>
 	</GroupBox>
 </UserControl>

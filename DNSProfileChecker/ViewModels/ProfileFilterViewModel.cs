@@ -230,7 +230,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			_state.ProfilesToCheck = ProfilesToCheck.ToList();
 			_state.OldAvaliable = AvaliableProfiles.ToList();
 			_state.PreviouslySelectedProfiles = SelectedAvaliable.ToList();
-
+			
 			this.TryClose();
 		}
 

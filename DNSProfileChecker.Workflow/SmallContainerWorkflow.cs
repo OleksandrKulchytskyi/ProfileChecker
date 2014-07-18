@@ -63,13 +63,16 @@ namespace DNSProfileChecker.Workflow
 
 					DoLog(LogSeverity.UI, "Begin to perform session(s) reordering workflow", null);
 					IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
-					if (!reorderManager.Reorder(sessions))
+					if (!IsSimulationMode)
 					{
-						DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
-						State = WorkflowStates.Failed;
+						if (!reorderManager.Reorder(sessions))
+						{
+							DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
+							State = WorkflowStates.Failed;
+						}
+						else
+							DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 					}
-					else
-						DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 				}
 				else
 					DoLog(LogSeverity.UI, "Session folder order is correct, no renumbering is necessary.", null);

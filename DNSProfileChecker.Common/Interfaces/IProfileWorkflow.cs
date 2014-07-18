@@ -24,6 +24,8 @@ namespace DNSProfileChecker.Common
 
 		bool IsImportant { get; set; }
 
+		bool IsSimulationMode { get; set; }
+
 		List<IProfileWorkflow> SubsequentWorkflows { get; }
 
 		void Execute(object parameter);

@@ -6,6 +6,8 @@ namespace Nuance.Radiology.DNSProfileChecker.Models
 	{
 		public string SourcePath { get; set; }
 
+		public bool IsSimulationMode { get; set; }
+
 		public List<ProfileEntry> ProfilesToCheck { get; set; }
 
 		public List<ProfileEntry> OldAvaliable { get; set; }

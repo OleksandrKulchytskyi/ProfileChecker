@@ -22,7 +22,10 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			_state.IsProfilesLoaded = false;
 
 			if (_state != null && _state.SourcePath.IsNotNullOrEmpty())
+			{
 				ProfileSource = _state.SourcePath;
+				IsSimulation = _state.IsSimulationMode;
+			}
 
 			SearchResults = new ObservableCollection<SearchResult>();
 		}
@@ -52,7 +55,15 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			}
 		}
 
-		TreeItem _selectedFolder;
+		private bool _isSimulation;
+
+		public bool IsSimulation
+		{
+			get { return _isSimulation; }
+			set { _isSimulation = value; NotifyOfPropertyChange(() => IsSimulation); }
+		}
+
+		private TreeItem _selectedFolder;
 		public TreeItem SelectedFolder
 		{
 			get
@@ -133,11 +144,11 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 				_aggregator.LogData(LogSeverity.Error, ex.Message, ex);
 			}
 
-			if (!proceed)
-				return;
+			if (!proceed) return;
 
 			_aggregator.LogData(LogSeverity.UI, string.Format("Source folder: {0}", ProfileSource), null);
 			this.NextTransition = Models.StateTransition.SourceSelectorFinished;
+			_state.IsSimulationMode = IsSimulation;
 			_state.SourcePath = ProfileSource;
 			_state.ClearState();
 

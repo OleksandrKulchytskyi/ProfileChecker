@@ -43,53 +43,65 @@ namespace DNSProfileChecker.Workflow
 						if (draFolder != null && draFolder.Exists)
 						{
 							DoLog(LogSeverity.Info, string.Format("Deleting content of drafiles folder in {0} ", sessionDi.FullName), null);
-							foreach (FileInfo fi in draFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly))
+							if (!IsSimulationMode)
 							{
-								approachTaken = true;
-								AggregateException exc;
-								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
-								if (exc != null)
-									DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
+								foreach (FileInfo fi in draFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly))
+								{
+									approachTaken = true;
+									AggregateException exc;
+									Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
+									if (exc != null)
+										DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
+								}
 							}
 
 							FileInfo draINI = new FileInfo(Path.Combine(sessionDi.FullName, "drafiles.ini"));
 							if (!draINI.Exists || approachTaken)
 							{
+								StreamWriter sw = null;
 								try
 								{
-									if (draINI.Exists)
+									if (draINI.Exists && !IsSimulationMode)
 										draINI.Delete();
+									if (!IsSimulationMode)
+									{
+										IFileFactory factory = new Common.Factories.FileFactory();
+										sw = factory.CreateFile(draINI.FullName, FileFactoryEnum.DRAFilesINI);
+										sw.Flush();
+									}
 
-									IFileFactory factory = new Common.Factories.FileFactory();
-									StreamWriter sw = factory.CreateFile(draINI.FullName, FileFactoryEnum.DRAFilesINI);
-									sw.Flush();
-									sw.Dispose();
 									DoLog(LogSeverity.Success, "drafiles.ini has been successfully re-created.", null);
 								}
 								catch (Exception ex)
 								{
 									DoLog(LogSeverity.Error, "Unable to create drafiles.ini file.", ex);
 								}
+								finally { if (sw != null) sw.Dispose(); }
 							}
 
 							FileInfo acarINI = new FileInfo(Path.Combine(sessionDi.FullName, "acarchive.ini"));
 							if (!acarINI.Exists || approachTaken)
 							{
+								StreamWriter sw = null;
 								try
 								{
-									if (acarINI.Exists)
+									if (acarINI.Exists && !IsSimulationMode)
 										acarINI.Delete();
 
-									IFileFactory factory = new Common.Factories.FileFactory();
-									StreamWriter sw = factory.CreateFile(acarINI.FullName, FileFactoryEnum.AcarchiveINI);
-									sw.Flush();
-									sw.Dispose();
+									if (!IsSimulationMode)
+									{
+										IFileFactory factory = new Common.Factories.FileFactory();
+										sw = factory.CreateFile(acarINI.FullName, FileFactoryEnum.AcarchiveINI);
+										sw.Flush();
+									}
+									
 									DoLog(LogSeverity.Success, "acarchive.ini has been successfully re-created.", null);
 								}
 								catch (Exception ex)
 								{
 									DoLog(LogSeverity.Error, "Unable to create acarchive.ini file.", ex);
 								}
+								finally { if (sw != null) sw.Dispose(); }
 							}
 						}
 						// drafiles directory doesn't exist
@@ -131,14 +143,17 @@ namespace DNSProfileChecker.Workflow
 								containerDI.Name, missedProfiles), null);
 
 						DoLog(LogSeverity.UI, "Begin to perform session(s) reordering workflow", null);
-						IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
-						if (!reorderManager.Reorder(sessions))
+						if (!IsSimulationMode)
 						{
-							DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
-							State = WorkflowStates.Failed;
+							IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
+							if (!reorderManager.Reorder(sessions))
+							{
+								DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
+								State = WorkflowStates.Failed;
+							}
+							else
+								DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 						}
-						else
-							DoLog(LogSeverity.UI, "Session re-ordering workflow has completed successfully.", null);
 					}
 					else
 						DoLog(LogSeverity.UI, "Session folder order is correct, no renumbering is necessary.", null);

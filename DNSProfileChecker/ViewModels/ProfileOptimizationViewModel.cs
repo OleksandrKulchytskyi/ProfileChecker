@@ -105,7 +105,7 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 					});
 
 					foreach (IProfileWorkflow w in workflows)
-						assignLoggerToWorkflow(w, _logger);
+						assignLoggerAndStateToWorkflow(w, _logger, _state);
 				}
 				catch (Exception ex)
 				{
@@ -144,6 +144,8 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 
 				if (isStopped) return;// terminate our process in case when stopped
 
+				if (_state.IsSimulationMode)
+					_logger.LogData(LogSeverity.UI, "Run in simulation mode.", null);
 				_logger.LogData(LogSeverity.UI, string.Format("Begin to process {0} DNS profile.", CurrentProfile.Name), null);
 
 				isProfileCorrect = true;
@@ -241,17 +243,18 @@ namespace Nuance.Radiology.DNSProfileChecker.ViewModels
 			NotifyOfPropertyChange(() => CanGoPrevious);
 		}
 
-		private void assignLoggerToWorkflow(IProfileWorkflow wf, ILogger logger)
+		private void assignLoggerAndStateToWorkflow(IProfileWorkflow wf, ILogger logger, WorkflowState state)
 		{
 			if (logger != null)
 			{
 				wf.Logger = logger;
+				wf.IsSimulationMode = state.IsSimulationMode;
 				if (wf.SubsequentWorkflows == null)
 					return;
 
 				foreach (var item in wf.SubsequentWorkflows)
 				{
-					assignLoggerToWorkflow(item, logger);
+					assignLoggerAndStateToWorkflow(item, logger, state);
 				}
 			}
 		}

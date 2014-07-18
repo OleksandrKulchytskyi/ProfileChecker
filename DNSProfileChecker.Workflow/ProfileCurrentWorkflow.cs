@@ -1,5 +1,4 @@
 ﻿using DNSProfileChecker.Common;
-using System.Collections.Generic;
 using System.IO;
 
 namespace DNSProfileChecker.Workflow

@@ -32,7 +32,8 @@ namespace DNSProfileChecker.Workflow
 				try
 				{
 					isDrafilesCreated = true;
-					Directory.CreateDirectory(draFolder.FullName);
+					if (!IsSimulationMode)
+						Directory.CreateDirectory(draFolder.FullName);
 					DoLog(LogSeverity.Success, string.Format("Directory [drafiles] has been created in the root: {0}", folderPath), null);
 				}
 				catch (Exception ex)
@@ -54,13 +55,16 @@ namespace DNSProfileChecker.Workflow
 					FileInfo[] content = draFolder.GetFiles("*.*", SearchOption.TopDirectoryOnly);
 					if (content.Length > 0)
 					{
-						DoLog(LogSeverity.Warn, "All content from the drafiles folder will be deleted.", null);
-						foreach (FileInfo fi in content)
+						DoLog(LogSeverity.Warn, "All the content from the drafiles folder will be deleted.", null);
+						if (!IsSimulationMode)
 						{
-							AggregateException exc;
-							Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
-							if (exc != null)
-								DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
+							foreach (FileInfo fi in content)
+							{
+								AggregateException exc;
+								Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
+								if (exc != null)
+									DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
+							}
 						}
 					}
 				}
@@ -68,8 +72,11 @@ namespace DNSProfileChecker.Workflow
 				StreamWriter sw = null;
 				try
 				{
-					sw = fact.CreateFile(draIniFile.FullName, FileFactoryEnum.DRAFilesINI);
-					sw.Flush();
+					if (!IsSimulationMode)
+					{
+						sw = fact.CreateFile(draIniFile.FullName, FileFactoryEnum.DRAFilesINI);
+						sw.Flush();
+					}
 					DoLog(LogSeverity.Success, string.Format("File drafiles.ini has been created in the root: {0}", folderPath), null);
 				}
 				catch (Exception ex)
@@ -95,7 +102,11 @@ namespace DNSProfileChecker.Workflow
 				StreamWriter sw = null;
 				try
 				{
-					sw = fact.CreateFile(acarchiveINI.FullName, FileFactoryEnum.AcarchiveINI);
+					if (!IsSimulationMode)
+					{
+						sw = fact.CreateFile(acarchiveINI.FullName, FileFactoryEnum.AcarchiveINI);
+						sw.Flush();
+					}
 					DoLog(LogSeverity.Success, string.Format("File acarchive.ini has been created in: {0}", folderPath), null);
 				}
 				catch (Exception ex)
@@ -124,12 +135,14 @@ namespace DNSProfileChecker.Workflow
 
 					try
 					{
-						Directory.Delete(folderPath, true);
+						if (!IsSimulationMode)
+							Directory.Delete(folderPath, true);
 						DoLog(LogSeverity.Success, string.Format("Folder {0} has been deleted.", draFolder.Parent.Name), null);
 					}
 					catch (Exception ex)
 					{
 						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", draFolder.Parent.Name), ex);
+						State = WorkflowStates.Exceptional;// ???????? to verify
 					}
 					return;
 				}
