@@ -21,7 +21,6 @@ namespace DNSProfileChecker.Workflow
 
 			string folderPath = parameter as string;
 			DirectoryInfo containerDI = new DirectoryInfo(folderPath);
-			IOrderedEnumerable<DirectoryInfo> orderedExp = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length)));
 			if (containerDI.Exists)
 			{
 				long size = containerDI.GetFolderSize();
@@ -29,7 +28,7 @@ namespace DNSProfileChecker.Workflow
 				{
 					bool approachTaken = false;
 					DoLog(LogSeverity.UI, string.Format("Dictation source ({0}) is too large, trimming is necessary.", containerDI.Name), null);
-					DirectoryInfo[] sessions = orderedExp.ToArray();
+					DirectoryInfo[] sessions = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
 
 					int interruptedIndex = -1;//index at which pruning workflow has been completed due to the min size limit.
 					DirectoryInfo[] notProcessed = null;
@@ -49,66 +48,20 @@ namespace DNSProfileChecker.Workflow
 								{
 									approachTaken = true;
 									AggregateException exc;
-									Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out  exc);
+									Retry.Do<object>(() => { fi.Delete(); return null; }, TimeSpan.FromMilliseconds(800), 2, out exc);
 									if (exc != null)
 										DoLog(LogSeverity.Error, string.Format("Unable to delete a file named: {0} ", fi.FullName), exc);
 								}
 							}
-
-							FileInfo draINI = new FileInfo(Path.Combine(sessionDi.FullName, "drafiles.ini"));
-							if (!draINI.Exists || approachTaken)
-							{
-								StreamWriter sw = null;
-								try
-								{
-									if (draINI.Exists && !IsSimulationMode)
-										draINI.Delete();
-									if (!IsSimulationMode)
-									{
-										IFileFactory factory = new Common.Factories.FileFactory();
-										sw = factory.CreateFile(draINI.FullName, FileFactoryEnum.DRAFilesINI);
-										sw.Flush();
-									}
-
-									DoLog(LogSeverity.Success, "drafiles.ini has been successfully re-created.", null);
-								}
-								catch (Exception ex)
-								{
-									DoLog(LogSeverity.Error, "Unable to create drafiles.ini file.", ex);
-								}
-								finally { if (sw != null) sw.Dispose(); }
-							}
-
-							FileInfo acarINI = new FileInfo(Path.Combine(sessionDi.FullName, "acarchive.ini"));
-							if (!acarINI.Exists || approachTaken)
-							{
-								StreamWriter sw = null;
-								try
-								{
-									if (acarINI.Exists && !IsSimulationMode)
-										acarINI.Delete();
-
-									if (!IsSimulationMode)
-									{
-										IFileFactory factory = new Common.Factories.FileFactory();
-										sw = factory.CreateFile(acarINI.FullName, FileFactoryEnum.AcarchiveINI);
-										sw.Flush();
-									}
-									
-									DoLog(LogSeverity.Success, "acarchive.ini has been successfully re-created.", null);
-								}
-								catch (Exception ex)
-								{
-									DoLog(LogSeverity.Error, "Unable to create acarchive.ini file.", ex);
-								}
-								finally { if (sw != null) sw.Dispose(); }
-							}
 						}
 						// drafiles directory doesn't exist
 						else
-							DoLog(LogSeverity.Warn, string.Format("Folder: [{0}] doesn't contains folder named Drafiles.", sessionDi.FullName), null);
+							DoLog(LogSeverity.Warn, string.Format("Folder: [{0}] doesn't contains folder named [drafiles].", sessionDi.FullName), null);
 
-						if (approachTaken && ((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold))
+						base.Execute(sessionDi.FullName);
+
+						if (approachTaken &&
+							((size = DirectoryInfoExtensions.GetDirectorySizeParalell(containerDI.FullName, true)) < Constants.EndPruningThreshold))
 						{
 							interruptedIndex = Array.IndexOf<DirectoryInfo>(sessions, sessionDi);
 							if (++interruptedIndex < sessions.Length)
@@ -120,21 +73,18 @@ namespace DNSProfileChecker.Workflow
 							DoLog(LogSeverity.UI, string.Format(trimCompleted, containerDI.Name, size.ConvertToMegabytes()), null);
 							break; // end pruning session directories.
 						}
-
 					}//end of foreach statement for sessions
 
 					if (interruptedIndex > -1 && notProcessed != null)
 					{
-						IProfileWorkflow wf = new DNSProfileChecker.Workflow.SessionVerifierWorkflow();
 						foreach (DirectoryInfo session in notProcessed)
 						{
-							wf.Logger = this.Logger;
-							wf.Execute(session.FullName);
+							base.Execute(session.FullName);
 						}
 					}
 
 					//according to the Scott's request after the trimming workflow, tool has to reoreder folders if needed.
-					DirectoryInfo[] sessionsDI = orderedExp.ToArray();
+					DirectoryInfo[] sessionsDI = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
 					IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
 					if (sessionsDI.Length > 0 && !sessionsValidator.Validate(sessionsDI))
 					{
@@ -146,7 +96,7 @@ namespace DNSProfileChecker.Workflow
 						if (!IsSimulationMode)
 						{
 							IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
-							if (!reorderManager.Reorder(sessions))
+							if (!reorderManager.Reorder(sessionsDI))
 							{
 								DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
 								State = WorkflowStates.Failed;
@@ -157,7 +107,7 @@ namespace DNSProfileChecker.Workflow
 					}
 					else
 						DoLog(LogSeverity.UI, "Session folder order is correct, no renumbering is necessary.", null);
-				}
+				}//end if scope for size check
 				else
 				{
 					State = WorkflowStates.NotApplied;

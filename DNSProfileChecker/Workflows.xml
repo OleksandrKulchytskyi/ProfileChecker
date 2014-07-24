@@ -9,7 +9,11 @@
 					<workflow name="sessionFolder" type="DNSProfileChecker.Workflow.SessionVerifierWorkflow, DNSProfileChecker.Workflow" important="1" />
 				</subsequent>
 			</workflow>
-			<workflow name="bigContainer" type="DNSProfileChecker.Workflow.BigContainerWorkflow, DNSProfileChecker.Workflow" important="1" />
+			<workflow name="bigContainer" type="DNSProfileChecker.Workflow.BigContainerWorkflow, DNSProfileChecker.Workflow" important="1" >
+				<subsequent>
+					<workflow name="sessionFolder" type="DNSProfileChecker.Workflow.SessionVerifierWorkflow, DNSProfileChecker.Workflow" important="1" />
+				</subsequent>
+			</workflow>
 		</subsequent>
 	</workflow>
 </workflows>

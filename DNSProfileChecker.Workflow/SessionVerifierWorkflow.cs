@@ -20,6 +20,7 @@ namespace DNSProfileChecker.Workflow
 			bool isWarned = false;
 			IFileFactory fact = new Common.Factories.FileFactory();
 			bool isDrafilesCreated = false;
+			
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
 			bool handlingContainerFolder = draFolder.Parent.Name.IndexOf("_container", StringComparison.OrdinalIgnoreCase) != -1;
 			if (!draFolder.Exists)
