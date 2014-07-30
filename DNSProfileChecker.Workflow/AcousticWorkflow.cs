@@ -80,11 +80,11 @@ namespace DNSProfileChecker.Workflow
 					}
 
 					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, item.Value + "_container"));
-					if (!di.Exists)
+					if (!diContainer.Exists)
 					{
 						DoLog(LogSeverity.Warn, string.Format("Acoustic container folder has been missed in the root {0}", currentFolder), null);
 						if (!IsSimulationMode)
-							di.Create();
+							diContainer.Create();
 						string addMsg = string.Format("Acoustic container folder {0} has been created.", diContainer.Name);
 						msgBuilder.AppendLine(addMsg);
 						DoLog(LogSeverity.Success, addMsg, null);

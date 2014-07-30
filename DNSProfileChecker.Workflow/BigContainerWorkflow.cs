@@ -84,9 +84,9 @@ namespace DNSProfileChecker.Workflow
 					}
 
 					//according to the Scott's request after the trimming workflow, tool has to reoreder folders if needed.
-					DirectoryInfo[] sessionsDI = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
+					DirectoryInfo[] sessionsAfterTrimming = containerDI.GetDirectories("session*", SearchOption.TopDirectoryOnly).OrderBy(f => int.Parse(f.Name.Remove(0, "session".Length))).ToArray();
 					IValidator<DirectoryInfo[]> sessionsValidator = new Common.Implementation.SessionFoldersSequenceValidator();
-					if (sessionsDI.Length > 0 && !sessionsValidator.Validate(sessionsDI))
+					if (sessionsAfterTrimming.Length > 0 && !sessionsValidator.Validate(sessionsAfterTrimming))
 					{
 						string missedProfiles = string.Join(",", sessionsValidator.MissedValues.Select(x => x.Name));
 						DoLog(LogSeverity.Warn, string.Format("Dictation source ({0}) has some missed session folder(s): {1}",
@@ -96,7 +96,7 @@ namespace DNSProfileChecker.Workflow
 						if (!IsSimulationMode)
 						{
 							IReorderManager reorderManager = new DNSProfileChecker.Common.Implementation.FolderReorderManager();
-							if (!reorderManager.Reorder(sessionsDI))
+							if (!reorderManager.Reorder(sessionsAfterTrimming))
 							{
 								DoLog(LogSeverity.Error, string.Format("Some error(s) occurred during re-ordering sessions{0}{1}", Environment.NewLine, GetMessage(reorderManager.Errors)), null);
 								State = WorkflowStates.Failed;
