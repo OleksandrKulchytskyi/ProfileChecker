@@ -20,7 +20,7 @@ namespace DNSProfileChecker.Workflow
 			bool isWarned = false;
 			IFileFactory fact = new Common.Factories.FileFactory();
 			bool isDrafilesCreated = false;
-			
+
 			DirectoryInfo draFolder = new DirectoryInfo(Path.Combine(folderPath, "drafiles"));
 			bool handlingContainerFolder = draFolder.Parent.Name.IndexOf("_container", StringComparison.OrdinalIgnoreCase) != -1;
 			if (!draFolder.Exists)
@@ -40,6 +40,24 @@ namespace DNSProfileChecker.Workflow
 				catch (Exception ex)
 				{
 					DoLog(LogSeverity.Error, string.Format("Unable to craete drafiles folder in the root folder: {0}", folderPath), ex);
+					State = WorkflowStates.Exceptional;
+				}
+			}
+
+			//Due to the Scoott's request, in case when the outcast folder exists, just purge it.
+			DirectoryInfo outcastFolder = new DirectoryInfo(Path.Combine(folderPath, "outcast"));
+			if (!outcastFolder.Exists)
+			{
+				try
+				{
+					if (!IsSimulationMode)
+						Directory.Delete(outcastFolder.FullName, true);
+					DoLog(LogSeverity.Success, string.Format("Directory [outcast] has been created in the root: {0}", folderPath), null);
+				}
+				catch (Exception ex)
+				{
+					DoLog(LogSeverity.Error, string.Format("Unable to craete outcast folder in the root folder: {0}", folderPath), ex);
+					State = WorkflowStates.Exceptional;
 				}
 			}
 
@@ -143,7 +161,7 @@ namespace DNSProfileChecker.Workflow
 					catch (Exception ex)
 					{
 						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", draFolder.Parent.Name), ex);
-						State = WorkflowStates.Exceptional;// ???????? to verify
+						State = WorkflowStates.Exceptional;//TODO the code scope to verify.
 					}
 					return;
 				}
