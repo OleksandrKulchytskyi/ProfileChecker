@@ -46,7 +46,7 @@ namespace DNSProfileChecker.Workflow
 
 			//Due to the Scoott's request, in case when the outcast folder exists, just purge it.
 			DirectoryInfo outcastFolder = new DirectoryInfo(Path.Combine(folderPath, "outcast"));
-			if (!outcastFolder.Exists)
+			if (outcastFolder.Exists)
 			{
 				try
 				{
@@ -161,7 +161,7 @@ namespace DNSProfileChecker.Workflow
 					catch (Exception ex)
 					{
 						DoLog(LogSeverity.Error, string.Format("Unable to delete session folder: {0}.", draFolder.Parent.Name), ex);
-						State = WorkflowStates.Exceptional;//TODO the code scope to verify.
+						State = WorkflowStates.Exceptional;//TODO: the code scope to verify.
 					}
 					return;
 				}

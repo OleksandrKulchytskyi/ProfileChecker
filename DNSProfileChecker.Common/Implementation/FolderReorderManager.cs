@@ -32,41 +32,51 @@ namespace DNSProfileChecker.Common.Implementation
 			string parentFolder = folders[folders.Length - 1].Parent.FullName;
 
 			List<Exception> excList = new List<Exception>();
-
+			int foldersCount = folders.Length;
 			while (!isSequenseCorreted)
 			{
-				for (int i = folders.Length - 1; i >= 0; i--)
+				if (foldersCount == 1)
 				{
-					DirectoryInfo current = folders[i];
-					int number = int.Parse(current.Name.Remove(0, "session".Length));
-					if (i > 0)
+					DirectoryInfo newDi = new DirectoryInfo(Path.Combine(parentFolder, "session1"));
+					newDi.Create();
+					newDi.CopyFrom(folders[0]);
+					folders[0].Delete(true);
+				}
+				else
+				{
+					for (int i = foldersCount - 1; i >= 0; i--)
 					{
-						DirectoryInfo nextDir = folders[i - 1];
-						int lowerNumber = int.Parse(nextDir.Name.Remove(0, "session".Length));
-						if (number - 1 != lowerNumber)
+						DirectoryInfo current = folders[i];
+						int number = int.Parse(current.Name.Remove(0, "session".Length));
+						if (i > 0)
 						{
-							DirectoryInfo newDi = new DirectoryInfo(Path.Combine(parentFolder, "session" + (lowerNumber + 1).ToString()));
-							if (!newDi.Exists)
+							DirectoryInfo nextDir = folders[i - 1];
+							int lowerNumber = int.Parse(nextDir.Name.Remove(0, "session".Length));
+							if (number - 1 != lowerNumber)
 							{
-								try
+								DirectoryInfo newDi = new DirectoryInfo(Path.Combine(parentFolder, "session" + (lowerNumber + 1).ToString()));
+								if (!newDi.Exists)
 								{
-									if (!useMove)
+									try
 									{
-										newDi.Create();
-										newDi.CopyFrom(current);
-										current.Delete(true);
+										if (!useMove)
+										{
+											newDi.Create();
+											newDi.CopyFrom(current);
+											current.Delete(true);
+										}
+										else
+											newDi.Move(current);
 									}
-									else
-										newDi.Move(current);
+									catch (Exception exc) { excList.Add(exc); }
+									finally
+									{
+										try { if (newDi.Exists) newDi.Delete(true); }
+										catch { }
+									}
 								}
-								catch (Exception exc) { excList.Add(exc); }
-								finally
-								{
-									try { if (newDi.Exists) newDi.Delete(true); }
-									catch { }
-								}
+								break;
 							}
-							break;
 						}
 					}
 				}
