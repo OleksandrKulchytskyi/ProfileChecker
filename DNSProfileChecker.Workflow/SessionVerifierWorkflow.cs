@@ -52,11 +52,11 @@ namespace DNSProfileChecker.Workflow
 				{
 					if (!IsSimulationMode)
 						Directory.Delete(outcastFolder.FullName, true);
-					DoLog(LogSeverity.Success, string.Format("Directory [outcast] has been created in the root: {0}", folderPath), null);
+					DoLog(LogSeverity.Success, string.Format("Directory [outcast] has been deleted in the root: {0}", folderPath), null);
 				}
 				catch (Exception ex)
 				{
-					DoLog(LogSeverity.Error, string.Format("Unable to craete outcast folder in the root folder: {0}", folderPath), ex);
+					DoLog(LogSeverity.Error, string.Format("Unable to delete [outcast] directory in the root folder: {0}", folderPath), ex);
 					State = WorkflowStates.Exceptional;
 				}
 			}
