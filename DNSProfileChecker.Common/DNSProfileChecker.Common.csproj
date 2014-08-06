@@ -47,6 +47,7 @@
     <Compile Include="ConversionHelper.cs" />
     <Compile Include="Extension\DirectoryInfoExtensions.cs" />
     <Compile Include="Extension\Ensure.cs" />
+    <Compile Include="Extension\ProfileWorkflowExtinsions.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Factories\FileFactory.cs" />
     <Compile Include="Implementation\AppConfigLogAggregator.cs" />

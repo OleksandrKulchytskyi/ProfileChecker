@@ -1,8 +1,7 @@
-﻿using DNSProfileChecker.Common;
-
-namespace Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers
+﻿
+namespace DNSProfileChecker.Common.Extension
 {
-	public static class ProfileWorkflowHelper
+	public static class ProfileWorkflowExtension
 	{
 		public static bool IsProfileMatchState(this IProfileWorkflow workflow, WorkflowStates state)
 		{

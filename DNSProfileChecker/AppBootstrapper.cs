@@ -14,7 +14,26 @@ namespace Nuance.Radiology.DNSProfileChecker
 		public AppBootstrapper()
 		{
 			container = new SimpleContainer();
+
+			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+			
 			Initialize();
+		}
+
+		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			Exception ex = (e.ExceptionObject as Exception);
+			Common.ILogger log = Caliburn.Micro.IoC.Get<Common.ILogger>();
+			if (log != null)
+				log.LogData(Common.LogSeverity.Fatal, ex.Message, ex);
+		}
+
+		private void TaskScheduler_UnobservedTaskException(object sender, System.Threading.Tasks.UnobservedTaskExceptionEventArgs e)
+		{
+			Common.ILogger log = Caliburn.Micro.IoC.Get<Common.ILogger>();
+			if (log != null)
+				log.LogData(Common.LogSeverity.Fatal, e.Exception.Message, e.Exception);
 		}
 
 		protected override void Configure()

@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DNSProfileChecker.Common;
+using DNSProfileChecker.Common.Extension;
 using Nuance.Radiology.DNSProfileChecker.Infrastructure.Helpers;
 using Nuance.Radiology.DNSProfileChecker.Models;
 using System;
