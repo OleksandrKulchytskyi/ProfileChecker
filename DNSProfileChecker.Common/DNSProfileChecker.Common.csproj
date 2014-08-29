@@ -51,6 +51,7 @@
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Factories\FileFactory.cs" />
     <Compile Include="Implementation\AppConfigLogAggregator.cs" />
+    <Compile Include="Implementation\ErroredEventLoger.cs" />
     <Compile Include="Implementation\FolderReorderManager.cs" />
     <Compile Include="Implementation\ProfileAssurance.cs" />
     <Compile Include="Implementation\SessionFoldersSequenceValidator.cs" />

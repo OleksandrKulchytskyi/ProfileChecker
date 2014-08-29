@@ -22,7 +22,6 @@ namespace DNSProfileChecker.Common
 
 			if (File.Exists(filePath))
 			{
-				//Read DB Setup ini file
 				string data = null;
 				try
 				{
@@ -97,6 +96,51 @@ namespace DNSProfileChecker.Common
 							break;
 
 						if (sectionData != null && line.IsNotNullOrEmpty())
+						{
+							int indx = line.IndexOf('=');
+							string key = line.Substring(0, indx);
+							string value = line.Substring(indx + 1);
+							KeyValuePair<string, string> pair = new KeyValuePair<string, string>(key, value);
+							sectionData.Add(pair);
+						}
+					}
+				}
+			}
+			else
+			{
+				throw new FileNotFoundException("This file was not found on machine", filePath);
+			}
+
+			return sections;
+		}
+
+		public static Dictionary<string, List<KeyValuePair<string, string>>> GetSections(string filePath)
+		{
+			Dictionary<string, List<KeyValuePair<string, string>>> sections = new Dictionary<string, List<KeyValuePair<string, string>>>();
+
+			if (File.Exists(filePath))
+			{
+				using (StreamReader sr = new StreamReader(filePath))
+				{
+					string line = null;
+					string sectionName = string.Empty;
+					List<KeyValuePair<string, string>> sectionData = null;
+
+					while ((line = sr.ReadLine()) != null) //Read each line until the end of the file
+					{
+						//Check if this is the start of the section
+						if (line.StartsWithIgnoreSpaces("[", false) && line.EndsWithIgnoreSpaces("]", false))
+						{
+							if (sectionData != null)
+								sectionData = null; //make section list rootless
+
+							sectionName = GetSectionName(line); //Get section name
+							sectionData = new List<KeyValuePair<string, string>>(); //Initialize section list
+							sections.Add(sectionName, sectionData); //Fill sections dictionary
+							continue;
+						}
+
+						else if (sectionData != null && line.IsNotNullOrEmpty())
 						{
 							int indx = line.IndexOf('=');
 							string key = line.Substring(0, indx);

@@ -18,9 +18,9 @@ namespace DNSProfileChecker.Workflow
 			string sourceFolder = parameters as string;
 
 			string currentFolder = Path.Combine(sourceFolder, "current");
-			string filePath = Path.Combine(sourceFolder, "current\\acoustic.ini");
+			string acousticFilePath = Path.Combine(sourceFolder, "current\\acoustic.ini");
 
-			bool isExists = File.Exists(filePath);
+			bool isExists = File.Exists(acousticFilePath);
 			if (!isExists)
 			{
 				if (IsImportant)
@@ -40,7 +40,7 @@ namespace DNSProfileChecker.Workflow
 				Dictionary<string, List<KeyValuePair<string, string>>> data = null;
 				try
 				{
-					data = IniFileParser.GetSingleSection(filePath, "Acoustics");
+					data = IniFileParser.GetSingleSection(acousticFilePath, "Acoustics");
 				}
 				catch (System.Exception ex)
 				{
@@ -64,12 +64,19 @@ namespace DNSProfileChecker.Workflow
 					return;
 				}
 
+				Queue<KeyValuePair<string, string>> missedContainer = new Queue<KeyValuePair<string, string>>();
+
 				StringBuilder msgBuilder = new StringBuilder();
 				bool isMainMissed = false;
 				bool isContainerMissed = false;
 				foreach (KeyValuePair<string, string> item in data["Acoustics"])
 				{
 					DirectoryInfo di = new DirectoryInfo(Path.Combine(currentFolder, item.Value));
+					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, item.Value + "_container"));
+
+					if (!di.Exists && !diContainer.Exists)
+						missedContainer.Enqueue(item);
+
 					if (!di.Exists)
 					{
 						string msg = string.Format("Acoustic dictation source folder {0} is missed.", item.Value);
@@ -79,7 +86,6 @@ namespace DNSProfileChecker.Workflow
 						continue;
 					}
 
-					DirectoryInfo diContainer = new DirectoryInfo(Path.Combine(currentFolder, item.Value + "_container"));
 					if (!diContainer.Exists)
 					{
 						DoLog(LogSeverity.Warn, string.Format("Acoustic container folder has been missed in the root {0}", currentFolder), null);
@@ -91,7 +97,51 @@ namespace DNSProfileChecker.Workflow
 					}
 					else
 						base.Execute(diContainer.FullName);
+				}//end foreach
+
+				if (missedContainer.Count > 0)
+				{
+					Dictionary<string, List<KeyValuePair<string, string>>> content = IniFileParser.GetSections(acousticFilePath);
+					if (content.Count > 0)
+					{
+						while (missedContainer.Count != 0)
+						{
+							KeyValuePair<string, string> forPurge = missedContainer.Dequeue();
+							foreach (string section in content.Keys)
+							{
+								int clearIndx = -1;
+								foreach (var sectionData in content[section])
+								{
+									if (sectionData.Key == forPurge.Key)
+									{
+										clearIndx = content[section].IndexOf(sectionData);
+										break;
+									}
+
+								}
+								if (clearIndx != -1)
+									content[section].RemoveAt(clearIndx);
+							}
+						}
+						File.Delete(acousticFilePath);
+
+						using (StreamWriter sw = new StreamWriter(acousticFilePath))
+						{
+							foreach (string section in content.Keys)
+							{
+								sw.WriteLine("[" + section + "]");
+								foreach (var sectionData in content[section])
+								{
+									sw.WriteLine(sectionData.Key + "=" + sectionData.Value);
+								}
+								sw.WriteLine(System.Environment.NewLine);
+							}
+							sw.Flush();
+							Logger.LogData(LogSeverity.Success, "Acoustic.ini has been fixed redundant data was purged from a file.", null);
+						}
+					}
 				}
+
 				if (isMainMissed)
 				{
 					Description = msgBuilder.ToString();
